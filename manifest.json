@@ -1,21 +1,39 @@
 {
   "short_name": "EA Youth",
   "name": "EA Youth Union",
+  "description": "የድምጽ መዝሙሮችን፣ የሰንበት ትምህርትን፣ እና የውዳሴ መዝሙሮችን በአንድ ቦታ የያዘ የተሟላ የሞባይል አፕሊኬሽን።",
   "icons": [
     {
       "src": "logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "./index.html",
   "background_color": "#121212",
   "theme_color": "#ffd700",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "categories": ["education", "music", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
