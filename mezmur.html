@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EA Mezmurs - Audio Library</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffd700">
+    
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Noto+Sans+Ethiopic:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           2. SYSTEM VARIABLES (THEME & SAFE AREAS)
+           ========================================= */
+        :root {
+            --primary: #ffd700;
+            --primary-dark: #b8860b;
+            --primary-glow: rgba(255, 215, 0, 0.3);
+            --accent: #ff4757;
+            --bg: #f0f3f6; /* ለ 3D እንዲመች ትንሽ ተቀይሯል */
+            --surface: #f0f3f6; /* Soft UI Background */
+            --text-main: #1a1a1a;
+            --text-sub: #636e72;
+            --border: rgba(0,0,0,0.02);
+            --shadow-light: #ffffff;
+            --shadow-dark: #d1d9e6;
+            --radius: 20px;
+            /* ለሞባይል ስክሪን ጠርዞች (Notch & Home Indicator) ክፍተት መተው */
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }    
+
+        /* Dark Mode (የጨለማ ገጽታ) ዲዛይን - 3D */
+        body.dark-mode {
+            --bg: #1e1e24;
+            --surface: #1e1e24;
+            --text-main: #e0e0e0;
+            --text-sub: #888888;
+            --border: rgba(255,255,255,0.05);
+            --shadow-light: #2c2c36;
+            --shadow-dark: #101012;
+        }
+
+        /* Sabbath Mode (የሰንበት ገጽታ) ዲዛይን */
+        body.sabbath-mode {
+            --primary: #6c5ce7;
+            --primary-dark: #4834d4;
+            --primary-glow: rgba(108, 92, 231, 0.3);
+        }
+
+        /* አጠቃላይ አቀማመጥ (Global Reset) */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; user-select: none; }
+        
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Rajdhani', 'Noto Sans Ethiopic', sans-serif;
+            background-color: var(--bg); color: var(--text-main);
+            padding-bottom: calc(100px + var(--safe-bottom));
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           3. UI COMPONENTS (HEADER, SEARCH, CARDS)
+           ========================================= */
+        
+        /* ራስጌ (Header) አቀማመጥ */
+        header {
+            padding: calc(20px + var(--safe-top)) 20px 0;
+            background: var(--bg); position: sticky; top: 0; z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .page-title h1 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+        .page-title span { font-size: 11px; color: var(--primary-dark); font-weight: 800; text-transform: uppercase; opacity: 0.8; }
+
+        /* Dark Mode አዝራር (3D) */
+        .header-actions .action-btn {
+            width: 42px; height: 42px; border-radius: 14px; background: var(--surface); border: none;
+            display: flex; align-items: center; justify-content: center; color: var(--text-main); font-size: 18px; 
+            cursor: pointer; 
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header-actions .action-btn:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.95);
+        }
+
+        /* መፈለጊያ ሳጥን (Search Input - 3D Inset) */
+        .search-container { position: relative; margin-bottom: 15px; }
+        .search-input {
+            width: 100%; height: 55px; border-radius: 18px; background: var(--surface); border: none;
+            padding: 0 50px 0 20px; font-size: 16px; color: var(--text-main); font-family: inherit; font-weight: 600;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            transition: 0.3s;
+        }
+        .search-input:focus { 
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light), 0 0 10px var(--primary-glow); 
+        }
+        .search-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-dark); font-size: 18px; }
+
+        /* ማጣሪያዎች (Categories Scroll - 3D Chips) */
+        .category-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; padding-top: 5px; scrollbar-width: none; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        
+        .chip {
+            padding: 10px 22px; border-radius: 30px; background: var(--surface); border: none;
+            color: var(--text-sub); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; 
+            box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+            transition: all 0.3s;
+        }
+        .chip:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            transform: scale(0.95);
+        }
+        .chip.active { 
+            background: var(--primary); color: #000; 
+            box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light), 0 5px 15px var(--primary-glow); 
+        }
+
+        /* የመዝሙር ዝርዝሮች እና ካርዶች (List & 3D Cards) */
+        .library-stats { padding: 5px 20px 15px; font-size: 12px; color: var(--text-sub); font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .mezmur-list { padding: 0 20px; display: flex; flex-direction: column; gap: 18px; perspective: 1000px; }
+
+        .mezmur-card {
+            background: var(--surface); border-radius: 20px; padding: 14px; display: flex; align-items: center; gap: 15px;
+            border: none; 
+            box-shadow: 7px 7px 15px var(--shadow-dark), -7px -7px 15px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden; transform-style: preserve-3d;
+        }
+        .mezmur-card:active { 
+            transform: scale(0.96) translateZ(-10px); 
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        .card-index { position: absolute; left: 0; top: 0; background: var(--primary); color: #000; font-size: 11px; padding: 4px 10px; border-bottom-right-radius: 12px; z-index: 2; font-weight: 900; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .card-img-box { width: 65px; height: 65px; border-radius: 15px; background: var(--surface); overflow: hidden; flex-shrink: 0; position: relative; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); padding: 3px; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; transition: 0.5s; }
+        
+        /* መዝሙር ሲጫወት የሚታይ አኒሜሽን */
+        .playing-indicator { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); border-radius: 12px; }
+        .wave-bar { width: 3px; height: 12px; background: var(--primary); margin: 0 1.5px; animation: wave 0.8s infinite ease-in-out; }
+        @keyframes wave { 0%, 100% { height: 6px; } 50% { height: 18px; } }
+
+        .card-info { flex: 1; min-width: 0; }
+        .card-title { margin: 0; font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        .card-singer { margin: 5px 0 0; font-size: 13px; color: var(--text-sub); display: flex; align-items: center; gap: 6px; font-weight: 600; }
+
+        .card-actions { display: flex; align-items: center; gap: 8px; }
+        .btn-icon { 
+            width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            border: none; background: var(--surface); color: var(--text-sub); font-size: 17px; cursor: pointer; 
+            box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+            transition: 0.2s; 
+        }
+        .btn-icon:active {
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+        }
+        .btn-play { background: var(--primary); color: #000; box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light), 0 4px 10px var(--primary-glow); }
+        .btn-play:active { box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); }
+        .btn-fav.active { color: #ff4757; }
+
+        /* =========================================
+           4. UTILITIES (TOAST, SKELETON LOADER)
+           ========================================= */
+        #offline-msg { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: #ff4757; color: white; padding: 10px 22px; border-radius: 30px; font-size: 12px; font-weight: 800; display: none; z-index: 999; box-shadow: 0 8px 20px rgba(255, 71, 87, 0.4); align-items: center; gap: 10px; }
+        #toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 12px 24px; border-radius: 12px; font-size: 13px; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 1000; font-weight: 600; text-align: center; width: max-content; }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+        
+        /* ዳታ እስኪመጣ የሚታይ የሎዲንግ ዲዛይን */
+        .skeleton { background: linear-gradient(90deg, var(--shadow-dark) 25%, var(--surface) 50%, var(--shadow-dark) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light); }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* =========================================
+           5. ONBOARDING TOUR (3D OVERLAY)
+           ========================================= */
+        #tour-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; display: none; backdrop-filter: blur(4px);
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #tour-popup {
+            position: fixed; background: var(--surface); padding: 25px; border-radius: 25px;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.3), -10px -10px 20px rgba(255,255,255,0.1), 0 0 0 2px var(--primary);
+            z-index: 10000; display: none; flex-direction: column; gap: 15px; width: 85%; max-width: 320px;
+            top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.8); opacity: 0; 
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-align: center;
+        }
+        #tour-popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .tour-highlight {
+            position: relative; z-index: 9999 !important; pointer-events: none;
+            box-shadow: 0 0 0 4px var(--primary), 0 0 25px var(--primary-glow) !important;
+            border-radius: inherit; transition: all 0.3s; background: var(--surface) !important;
+        }
+        .tour-icon { font-size: 40px; color: var(--primary); margin-bottom: 5px; text-shadow: 0 5px 15px var(--primary-glow); }
+        .tour-title { font-size: 20px; font-weight: 900; color: var(--text-main); margin: 0; }
+        .tour-desc { font-size: 15px; color: var(--text-sub); font-weight: 600; margin: 0; line-height: 1.4; }
+        .tour-btn { 
+            background: var(--primary); color: #000; border: none; padding: 14px; border-radius: 15px; 
+            font-weight: 800; cursor: pointer; font-family: inherit; font-size: 16px;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); 
+            transition: 0.2s; margin-top: 10px;
+        }
+        .tour-btn:active { transform: scale(0.95); box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2); }
+        .tour-skip { font-size: 13px; color: var(--text-sub); font-weight: 700; background: none; border: none; cursor: pointer; padding: 5px; margin-top: 5px; }
+    </style>
+</head>
+<body class="page-transition">
+    
+    <div id="toast"></div>
+
+    <div id="tour-overlay"></div>
+    <div id="tour-popup">
+        <i id="tour-icon" class="fas fa-sparkles tour-icon"></i>
+        <h2 id="tour-title" class="tour-title">እንኳን ደህና መጡ!</h2>
+        <p id="tour-desc" class="tour-desc">ወደ EA Youth Union መዝሙር ማዳመጫ ገጽ እንኳን በሰላም መጡ።</p>
+        <button id="tour-next-btn" class="tour-btn" onclick="nextTourStep()">ቀጣይ <i class="fas fa-arrow-right"></i></button>
+        <button class="tour-skip" onclick="endTour()">ዝለል (Skip)</button>
+    </div>
+
+    <header>
+        <div class="header-top">
+            <div class="page-title">
+                <h1>መዝሙር </h1>
+                <span id="sub-brand">EA Youth Union Audio Library</span>
+            </div>
+            <div class="header-actions">
+                <div class="action-btn" onclick="toggleTheme()">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container" id="tour-search">
+            <input type="text" id="search-input" class="search-input" placeholder="በቁጥር፣ በዘማሪ ስም ወይም በርዕስ..." onkeyup="handleSearch()">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="category-scroll" id="tour-categories">
+            <div class="chip active" onclick="filterCategory('All', this)">ሁሉም</div>
+            <div class="chip" onclick="filterCategory('ምስጋና', this)">ምስጋና</div>
+            <div class="chip" onclick="filterCategory('ንስሐ', this)">ንስሐ</div>
+            <div class="chip" onclick="filterCategory('ተስፋ', this)">ተስፋ</div>
+            <div class="chip" onclick="filterCategory('ሰንበት', this)">ሰንበት</div>
+            <div class="chip" onclick="filterCategory('Fav', this)"><i class="fas fa-heart"></i> የተመረጡ</div>
+        </div>
+    </header>
+
+    <div class="library-stats">
+        <span id="total-count">መዝሙሮች በመጫን ላይ...</span>
+        <span id="storage-status"><i class="fas fa-cloud"></i> እየዘመነ ነው</span>
+    </div>
+
+    <div class="mezmur-list" id="mezmur-container">
+        <div class="skeleton" style="height:90px; border-radius:20px; border:none;"></div>
+        <div class="skeleton" style="height:90px; border-radius:20px; border:none;"></div>
+        <div class="skeleton" style="height:90px; border-radius:20px; border:none;"></div>
+    </div>
+    
+    <div id="empty-state" style="display:none; text-align:center; padding-top:80px; opacity:0.6;">
+        <i class="fas fa-music" style="font-size:50px; margin-bottom:15px; color:var(--primary); text-shadow: 0 10px 20px var(--primary-glow);"></i>
+        <p style="font-weight:700;">ምንም መዝሙር አልተገኘም</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="hymnal.js"></script>
+    <script src="nav.js"></script>
+   
+    <script>
+        // --- 1. FIREBASE INITIALIZATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBERVjtc0sX_douQdDRL8amgLkbf9Rnvqs",
+            authDomain: "ea-youth-union-d22b1.firebaseapp.com",
+            databaseURL: "https://ea-youth-union-d22b1-default-rtdb.firebaseio.com",
+            projectId: "ea-youth-union-d22b1",
+            storageBucket: "ea-youth-union-d22b1.firebasestorage.app",
+            messagingSenderId: "712139060952",
+            appId: "1:712139060952:web:56553176494e3f4e8689ad"
+        };
+        
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 2. GLOBAL STATE (ተለዋዋጭ ዳታዎች) ---
+        let allMezmurs = []; // ሁሉንም መዝሙር የሚይዝ
+        let filteredMezmurs = []; // ማጣሪያ የተደረገበትን የሚይዝ
+        let favorites = JSON.parse(localStorage.getItem('ea_favorites')) || []; // የተወደዱ መዝሙሮች
+        let currentFilter = 'All'; // አሁን ያለንበት ካታጎሪ
+
+        // App ሲከፈት የሚሰሩ ነገሮች (Lifecycle Hook)
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme();
+            syncSystemConfig();
+            initData();
+            checkConnectivity();
+            
+            // የ Navigation ባር ማስነሻ
+            if(window.AppNavigation) AppNavigation.init();
+
+            // የገጽ ጉብኝቱን (Tour) መጀመር
+            setTimeout(startTourIfNeeded, 1500);
+        });
+
+        // --- 3. SYSTEM CONFIG SYNC (Sabbath Mode) ---
+        // ከ Firebase የ SystemConfig/sabbathMode እሴትን በማንበብ UI ይቀይራል
+function syncSystemConfig() {
+    db.ref('SystemConfig').on('value', snap => {
+        const conf = snap.val() || {};
+        const now = new Date();
+        const day = now.getDay();
+        const hour = now.getHours();
+        
+        // አርብ ከ 18:00 እስከ ቅዳሜ 17:59
+        const isSabbathTime = (day === 5 && hour >= 18) || (day === 6 && hour < 18);
+        const isAutoSabbath = (conf.autoSabbath === true || conf.autoSabbath === "true") && isSabbathTime;
+        const isForceSabbath = (conf.forceSabbath === true || conf.forceSabbath === "true");
+
+        if(isAutoSabbath || isForceSabbath) {
+            document.body.classList.add('sabbath-mode');
+            
+            // የ Header ጽሁፍን ለመቀየር (ካለ)
+            const subBrand = document.getElementById('sub-brand') || document.getElementById('t_sub') || document.getElementById('stream-desc') || document.getElementById('brand-label');
+            if(subBrand) subBrand.innerText = "መልካም ሰንበት 🕊️";
+
+            // Notification
+            const currentWeekStr = now.getFullYear() + '-' + getWeekNumber(now);
+            if (localStorage.getItem('ea_sabbath_notified_week') !== currentWeekStr) {
+                if (typeof triggerNativeNotification === 'function') {
+                    triggerNativeNotification("መልካም ሰንበት! 🕊️", "የበረከት ሰንበት ይሁንሎት!");
+                } else if (typeof showToast === 'function') {
+                    showToast("መልካም ሰንበት! 🕊️", "dove");
+                }
+                localStorage.setItem('ea_sabbath_notified_week', currentWeekStr);
+            }
+
+        } else {
+            document.body.classList.remove('sabbath-mode');
+            if (day !== 5 && day !== 6) localStorage.removeItem('ea_sabbath_notified_week');
+        }
+    });
+}
+
+function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+}
+
+
+        // --- 4. DATA FETCHING & OFFLINE CACHE (የዳታ አያያዝ) ---
+        // መጀመሪያ ከስልክ Storage ያነባል፣ ኢንተርኔት ካለ ደግሞ ከ Firebase ያመጣል
+        function initData() {
+            const localData = localStorage.getItem('ea_mezmurs_cache');
+            if(localData) {
+                allMezmurs = JSON.parse(localData);
+                renderMezmurs(allMezmurs);
+                document.getElementById('total-count').innerText = `${allMezmurs.length} መዝሙሮች `;
+                
+                if(!navigator.onLine) {
+                    document.getElementById('storage-status').innerHTML = '<i class="fas fa-wifi-slash" style="color:#ff4757"></i> ..';
+                }
+            }
+
+            if(navigator.onLine) fetchFromFirebase();
+            window.addEventListener('online', fetchFromFirebase);
+        }
+
+        function fetchFromFirebase() {
+            document.getElementById('storage-status').innerHTML = '<i class="fas fa-sync fa-spin"></i> እያሰሰ ነው...';
+            
+            db.ref('Mezmurs').on('value', snap => {
+                const data = snap.val();
+                if(data) {
+                    const arr = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    // በ index መሰረት መደርደር (Sort)
+                    const sortedArray = arr.sort((a, b) => (b.index || 0) - (a.index || 0));
+                    
+                    // አዲስ የቅደም ተከተል ቁጥር (seqNumber) መስጠት
+                    sortedArray.forEach((m, i) => m.seqNumber = i + 1);
+                    
+                    allMezmurs = sortedArray;
+                    // ለ Offline አጠቃቀም LocalStorage ላይ ማስቀመጥ
+                    localStorage.setItem('ea_mezmurs_cache', JSON.stringify(allMezmurs));
+                    
+                    // ያለንበት Filter ላይ ሆኖ ዳታውን ማሳየት
+                    if(currentFilter === 'All') {
+                        renderMezmurs(allMezmurs);
+                    } else {
+                        const activeChip = document.querySelector('.chip.active');
+                        filterCategory(currentFilter, activeChip);
+                    }
+                    
+                    document.getElementById('total-count').innerText = `${allMezmurs.length} መዝሙሮች አሉ`;
+                    document.getElementById('storage-status').innerHTML = '<i class="fas fa-check-circle" style="color:#4cd137"></i> ታድሷል';
+                }
+            }, error => console.error("Firebase fetch error:", error));
+        }
+
+        // --- 5. DOM RENDERING (ካርዶቹን ስክሪን ላይ ማሳየት) ---
+        function renderMezmurs(list) {
+            const container = document.getElementById('mezmur-container');
+            filteredMezmurs = list;
+            
+            if(list.length === 0) {
+                container.innerHTML = '';
+                document.getElementById('empty-state').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('empty-state').style.display = 'none';
+            
+            // የ HTML ካርድ መፍጠሪያ (Template String)
+            container.innerHTML = list.map(m => {
+                const isFav = favorites.includes(m.id);
+                const displayNumber = m.seqNumber || m.index || '';
+                
+                return `
+                <div class="mezmur-card tour-card-target" onclick="playSong('${m.id}')">
+                    <div class="card-index">#${displayNumber}</div>
+                    <div class="card-img-box">
+                        <img src="${m.image || 'logo.png'}" class="card-img" onerror="this.src='logo.png'">
+                        <div class="playing-indicator" id="play-anim-${m.id}">
+                            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title">${m.title}</h3>
+                        <p class="card-singer"><i class="fas fa-microphone-lines"></i> ${m.singer}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-icon btn-fav ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${m.id}')">
+                            <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                        <button class="btn-icon btn-play"><i class="fas fa-play"></i></button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // --- 6. USER INTERACTIONS (መፈለግ፣ ማጣራት፣ ማጫወት) ---
+        function playSong(id) {
+            // የመዝሙር ዝርዝሩን ለ Audio Player ማስተላለፍ
+            localStorage.setItem('ea_player_queue', JSON.stringify(filteredMezmurs));
+            localStorage.setItem('ea_current_song_id', id);
+            
+            // የ Wave አኒሜሽን ማሳየት
+            document.querySelectorAll('.playing-indicator').forEach(el => el.style.display = 'none');
+            const ind = document.getElementById(`play-anim-${id}`);
+            if(ind) ind.style.display = 'flex';
+            
+            // ወደ player.html ገጽ መሄድ
+            document.body.classList.add('page-exit');
+            setTimeout(() => window.location.href = 'player.html', 300);
+        }
+
+        // የ Search አሰራር
+        function handleSearch() {
+            const q = document.getElementById('search-input').value.toLowerCase().trim();
+            if(!q) { renderMezmurs(allMezmurs); return; }
+            
+            const res = allMezmurs.filter(m => 
+                m.title.toLowerCase().includes(q) || 
+                m.singer.toLowerCase().includes(q) || 
+                (m.seqNumber && m.seqNumber.toString().includes(q)) || 
+                (m.index && m.index.toString() === q) 
+            );
+            renderMezmurs(res);
+        }
+
+        // የ Category Filter አሰራር
+        function filterCategory(cat, el) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if(el) el.classList.add('active');
+            currentFilter = cat;
+            
+            if(cat === 'All') renderMezmurs(allMezmurs);
+            else if(cat === 'Fav') renderMezmurs(allMezmurs.filter(m => favorites.includes(m.id)));
+            else renderMezmurs(allMezmurs.filter(m => m.category === cat));
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ወደ Favorties መጨመር
+        function toggleFav(e, id) {
+            e.stopPropagation(); // ካርዱ እንዳይነካ ይከላከላል
+            const idx = favorites.indexOf(id);
+            if(idx > -1) {
+                favorites.splice(idx, 1);
+                showToast("ከተመረጡት ውስጥ ወጥቷል");
+            } else {
+                favorites.push(id);
+                showToast("የተመረጡት ውስጥ ተጨምሯል ❤️");
+            }
+            localStorage.setItem('ea_favorites', JSON.stringify(favorites));
+            renderMezmurs(filteredMezmurs); // UI ለማደስ
+        }
+
+        // --- 7. UTILITY FUNCTIONS (Theme & Network) ---
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('ea_theme', isDark ? 'dark' : 'light');
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', isDark ? '#1e1e24' : '#ffd700');
+        }
+
+        function applyTheme() {
+            const theme = localStorage.getItem('ea_theme');
+            if(theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').className = 'fas fa-sun';
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1e1e24');
+            }
+        }
+
+        function checkConnectivity() {
+            const msg = document.getElementById('offline-msg');
+            const storageStatus = document.getElementById('storage-status');
+            
+            window.addEventListener('online', () => {
+                msg.style.display = 'none';
+                if (allMezmurs.length > 0) storageStatus.innerHTML = '<i class="fas fa-check-circle" style="color:#4cd137"></i> ዘምኗል';
+            });
+            
+            window.addEventListener('offline', () => {
+                msg.style.display = 'flex';
+                storageStatus.innerHTML = '<i class="fas fa-wifi-slash" style="color:#ff4757"></i> ከመስመር ውጭ';
+                showToast("ከመስመር ውጭ ነዎት! ለአዳዲስ መዝሙሮች ኢንተርኔት ይጠቀሙ።");
+            });
+            
+            if(!navigator.onLine) msg.style.display = 'flex';
+        }
+
+        function showToast(txt) {
+            const t = document.getElementById('toast');
+            t.innerText = txt;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // --- 8. ONBOARDING TOUR LOGIC ---
+        const tourSteps = [
+            { 
+                target: null, 
+                icon: 'fa-sparkles',
+                title: 'እንኳን ደህና መጡ! 🎉', 
+                desc: 'ወደ EA Youth Union አዲሱ 3D የመዝሙር ማዳመጫ ገጽ እንኳን በሰላም መጡ። አጠቃቀሙን በአጭሩ ላሳይዎት?' 
+            },
+            { 
+                target: '#tour-search', 
+                icon: 'fa-search',
+                title: 'ፈጣን መፈለጊያ', 
+                desc: 'የሚፈልጉትን መዝሙር በርዕስ፣ በዘማሪ ስም ወይም በቁጥር እዚህ መፈለግ ይችላሉ።' 
+            },
+            { 
+                target: '#tour-categories', 
+                icon: 'fa-filter',
+                title: 'የመዝሙር ምድቦች', 
+                desc: 'መዝሙሮችን በቀላሉ በምስጋና፣ ንስሐ፣ ሰንበት እና ሌሎችም ማጣራት ይችላሉ።' 
+            },
+            { 
+                target: '.tour-card-target', 
+                icon: 'fa-play-circle',
+                title: 'መዝሙር ማጫወት', 
+                desc: 'መዝሙሩን ለማዳመጥ ካርዱን ይጫኑ። የልብ ምልክቷን (<i class="fas fa-heart"></i>) በመንካትም ወደ ምርጫዎ ማስገባት ይችላሉ።' 
+            }
+        ];
+        
+        let currentTourStep = 0;
+
+        function startTourIfNeeded() {
+            if(!localStorage.getItem('ea_mezmur_3d_tour_done')) {
+                const overlay = document.getElementById('tour-overlay');
+                const popup = document.getElementById('tour-popup');
+                
+                overlay.style.display = 'block';
+                popup.style.display = 'flex';
+                
+                // Trigger animation
+                setTimeout(() => {
+                    overlay.style.opacity = '1';
+                    renderTourStep();
+                }, 50);
+            }
+        }
+
+        function renderTourStep() {
+            // Remove previous highlights
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+            
+            if(currentTourStep >= tourSteps.length) {
+                endTour();
+                return;
+            }
+
+            const step = tourSteps[currentTourStep];
+            document.getElementById('tour-title').innerHTML = step.title;
+            document.getElementById('tour-desc').innerHTML = step.desc;
+            document.getElementById('tour-icon').className = `fas ${step.icon} tour-icon`;
+
+            const btn = document.getElementById('tour-next-btn');
+            btn.innerHTML = currentTourStep === tourSteps.length - 1 ? 'ጨረስኩ <i class="fas fa-check"></i>' : 'ቀጣይ <i class="fas fa-arrow-right"></i>';
+
+            if(step.target) {
+                const targetEl = document.querySelector(step.target);
+                if(targetEl) {
+                    targetEl.classList.add('tour-highlight');
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            document.getElementById('tour-popup').classList.add('show');
+        }
+
+        function nextTourStep() {
+            document.getElementById('tour-popup').classList.remove('show');
+            setTimeout(() => {
+                currentTourStep++;
+                renderTourStep();
+            }, 300);
+        }
+
+        function endTour() {
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+            document.getElementById('tour-overlay').style.opacity = '0';
+            document.getElementById('tour-popup').classList.remove('show');
+            
+            setTimeout(() => {
+                document.getElementById('tour-overlay').style.display = 'none';
+                document.getElementById('tour-popup').style.display = 'none';
+                localStorage.setItem('ea_mezmur_3d_tour_done', 'true');
+            }, 400);
+        }
+    </script>
+    
+    <script src="ea-keyboard.js"></script>
+        <script src="ea.js"></script>
+</body>
+</html>

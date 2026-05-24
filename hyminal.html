@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EA youth union SDA Hymnal</title>
+    
+    <meta name="theme-color" content="#ffd700" id="theme-meta">
+    
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="transition.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&family=Noto+Sans+Ethiopic:wght@300;400;600;700;900&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'am', 
+                includedLanguages: 'am,en,om',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBERVjtc0sX_douQdDRL8amgLkbf9Rnvqs",
+        authDomain: "ea-youth-union-d22b1.firebaseapp.com",
+        databaseURL: "https://ea-youth-union-d22b1-default-rtdb.firebaseio.com",
+        projectId: "ea-youth-union-d22b1",
+        storageBucket: "ea-youth-union-d22b1.firebasestorage.app",
+        messagingSenderId: "712139060952",
+        appId: "1:712139060952:web:56553176494e3f4e8689ad"
+      };
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+    </script>
+
+    <style>
+        /* =========================================
+           1. CORE DESIGN SYSTEM & VARIABLES (Modern 3D)
+           ========================================= */
+        :root {
+            --primary: #ffd700;
+            --primary-grad: linear-gradient(135deg, #ffdf00, #d4af37);
+            --primary-dark: #b8860b;
+            --primary-glow: rgba(255, 215, 0, 0.4);
+            --accent: #00f3ff;
+            --accent-glow: rgba(0, 243, 255, 0.4);
+            --danger: #ff4757;
+            
+            --bg: #f0f3f6;
+            --surface: #ffffff;
+            --surface-float: rgba(255, 255, 255, 0.85);
+            --text-main: #1a1a1a;
+            --text-sub: #636e72;
+            --border: rgba(255,255,255,0.5);
+            
+            --shadow-light-3d: 6px 6px 14px rgba(0,0,0,0.06), -6px -6px 14px rgba(255,255,255,0.9);
+            --shadow-inset-3d: inset 4px 4px 8px rgba(0,0,0,0.05), inset -4px -4px 8px rgba(255,255,255,0.9);
+            
+            --radius-xl: 32px;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+            --reader-font: 'Noto Sans Ethiopic', sans-serif;
+        }
+
+        body.dark-mode {
+            --bg: #0f1115;
+            --surface: #1a1d24;
+            --surface-float: rgba(26, 29, 36, 0.85);
+            --primary-grad: linear-gradient(135deg, #d4af37, #b8860b);
+            --text-main: #f0f0f0;
+            --text-sub: #a0a5ab;
+            --border: rgba(255,255,255,0.05);
+            
+            --shadow-light-3d: 8px 8px 18px rgba(0,0,0,0.6), -8px -8px 18px rgba(255,255,255,0.03);
+            --shadow-inset-3d: inset 4px 4px 8px rgba(0,0,0,0.4), inset -4px -4px 8px rgba(255,255,255,0.02);
+            --primary-glow: rgba(255, 215, 0, 0.15);
+        }
+
+        body.sabbath-mode {
+            --primary: #6c5ce7;
+            --primary-grad: linear-gradient(135deg, #81ecec, #6c5ce7);
+            --primary-dark: #4834d4;
+            --primary-glow: rgba(108, 92, 231, 0.3);
+        }
+
+        /* Hide Google Translate UI completely */
+        .skiptranslate, #google_translate_element { display: none !important; }
+        body { top: 0 !important; }
+
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
+        
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif;
+            background-color: var(--bg); color: var(--text-main);
+            padding-bottom: calc(150px + var(--safe-bottom));
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden; scroll-behavior: smooth;
+        }
+
+        /* =========================================
+           2. HEADER & ADVANCED SEARCH
+           ========================================= */
+        .hymnal-header {
+            padding: calc(20px + var(--safe-top)) 20px 20px;
+            background: var(--surface-float);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid var(--border);
+            display: flex; flex-direction: column; gap: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .page-title h1 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.8px; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 6px var(--primary-glow)); }
+        .page-title span { font-size: 11px; color: var(--primary-dark); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        
+        .action-btn {
+            width: 44px; height: 44px; border-radius: 16px;
+            background: var(--surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main); font-size: 18px; cursor: pointer;
+            box-shadow: var(--shadow-light-3d); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .action-btn:active { box-shadow: var(--shadow-inset-3d); transform: scale(0.95); }
+
+        .lang-selector {
+            appearance: none; background: var(--surface); border: 1px solid var(--border);
+            padding: 10px 18px 10px 40px; border-radius: 16px; color: var(--text-main);
+            font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer;
+            box-shadow: var(--shadow-light-3d); transition: 0.3s;
+        }
+        .lang-selector:active { box-shadow: var(--shadow-inset-3d); transform: scale(0.97); }
+        .lang-wrapper { position: relative; }
+        .lang-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary-dark); font-size: 15px; pointer-events: none; z-index: 2;}
+
+        .search-box { position: relative; width: 100%; }
+        .search-box input {
+            width: 100%; height: 55px; border-radius: 20px;
+            background: var(--bg); border: 2px solid transparent;
+            padding: 0 50px 0 25px; font-size: 16px; font-weight: 600;
+            color: var(--text-main); transition: all 0.4s ease; font-family: inherit;
+            box-shadow: var(--shadow-inset-3d);
+        }
+        .search-box input:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 20px var(--primary-glow), var(--shadow-light-3d); }
+        .search-box input::placeholder { color: var(--text-sub); font-weight: 500; opacity: 0.7; }
+        .search-box i { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); color: var(--primary-dark); font-size: 18px; transition: 0.3s; }
+        .search-box input:focus + i { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+
+        /* =========================================
+           3. HYMNAL LIST & CARDS
+           ========================================= */
+        .list-info { padding: 15px 25px 5px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.5px; text-transform: uppercase; }
+        .hymnal-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+        .hymn-card {
+            background: linear-gradient(145deg, var(--surface), var(--bg)); 
+            border-radius: var(--radius-lg);
+            padding: 18px; display: flex; align-items: center; gap: 18px;
+            border: 1px solid var(--border); 
+            box-shadow: var(--shadow-light-3d);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+        
+        .hymn-card:hover { transform: translateY(-4px); box-shadow: 8px 12px 20px rgba(0,0,0,0.08), -8px -8px 20px rgba(255,255,255,0.8); }
+        body.dark-mode .hymn-card:hover { box-shadow: 8px 12px 25px rgba(0,0,0,0.8), -4px -4px 15px rgba(255,255,255,0.05); border-color: var(--primary-dark); }
+        .hymn-card:active { transform: translateY(2px) scale(0.98); box-shadow: var(--shadow-inset-3d); }
+
+        .hymn-number {
+            width: 60px; height: 60px; border-radius: 18px;
+            background: var(--primary-grad); color: #000; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 900; font-family: 'Poppins'; flex-shrink: 0;
+            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.6), 0 8px 15px var(--primary-glow);
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+            position: relative; z-index: 1;
+        }
+        .hymn-number::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(rgba(255,255,255,0.4), transparent); border-radius: 18px 18px 0 0; }
+
+        .hymn-details { flex: 1; min-width: 0; }
+        .hymn-title { margin: 0 0 6px; font-size: 17px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); letter-spacing: -0.3px; }
+        .hymn-meta { font-size: 12px; color: var(--text-sub); font-weight: 600; display: flex; gap: 12px; align-items: center; }
+        
+        .audio-badge { background: var(--bg); color: var(--accent); padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 900; display: flex; align-items: center; gap: 6px; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1), 0 0 10px var(--accent-glow); border: 1px solid rgba(0,243,255,0.2); text-transform: uppercase;}
+        .audio-badge i { filter: drop-shadow(0 0 2px var(--accent)); }
+
+        @keyframes fadeUp3D { 
+            0% { opacity: 0; transform: translateY(30px) scale(0.9); } 
+            100% { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+
+        /* =========================================
+           4. LYRICS READER MODAL
+           ========================================= */
+        .lyrics-modal {
+            position: fixed; inset: 0; z-index: 2000;
+            background: var(--bg); display: none; flex-direction: column;
+            transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .lyrics-modal.active { transform: translateY(0); display: flex; }
+
+        .lyrics-header {
+            padding: calc(20px + var(--safe-top)) 20px 15px;
+            background: var(--surface-float); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); z-index: 10;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+        }
+        .lyrics-title-box { text-align: center; }
+        .lyrics-title-box h2 { margin: 0; font-size: 22px; font-weight: 900; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .lyrics-title-box p { margin: 4px 0 0; font-size: 13px; color: var(--text-sub); font-weight: 800; letter-spacing: 0.5px; }
+
+        .lyrics-tools { display: flex; gap: 12px; padding: 15px 20px; background: var(--bg); border-bottom: 1px solid var(--border); justify-content: space-around; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.02); }
+        .tool-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 16px; border-radius: 14px; transition: 0.3s; box-shadow: var(--shadow-light-3d); }
+        .tool-btn:active { box-shadow: var(--shadow-inset-3d); transform: scale(0.95); color: var(--primary-dark); }
+        .tool-btn i { color: var(--primary-dark); font-size: 15px; }
+
+        .lyrics-body {
+            flex: 1; overflow-y: auto; padding: 40px 30px 180px; 
+            font-family: var(--reader-font); font-size: 18px; line-height: 2.4;
+            color: var(--text-main); text-align: left; font-weight: 600;
+            transition: font-size 0.1s ease-out; 
+            touch-action: pan-y; 
+        }
+        
+        .verse-wrapper { will-change: transform, opacity; margin-bottom: 30px; }
+        .lyrics-body .chorus { font-weight: 900; color: var(--primary-dark); font-style: italic; background: var(--surface); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-light-3d); border-left: 4px solid var(--primary); margin:0;}
+        .lyrics-body .chorus::before { content: " "; white-space: pre; font-size: 12px; opacity: 0.8; text-transform: uppercase; letter-spacing: 2px; color: var(--text-sub); font-style: normal; }
+        .lyrics-body .verse { margin:0; }
+
+        @keyframes fadeUp3DLyrics {
+            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* =========================================
+           5. COMPACT MINI AUDIO PLAYER
+           ========================================= */
+        .mini-player {
+            position: fixed; 
+            bottom: calc(85px + var(--safe-bottom)); 
+            left: 20px; right: 20px;
+            background: var(--surface-float); 
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border-radius: var(--radius-xl); 
+            padding: 12px 18px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2), inset 1px 1px 2px rgba(255,255,255,0.4);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            display: none; align-items: center; gap: 12px; 
+            z-index: 2500; 
+            transform: translateY(150%) scale(0.9); opacity: 0; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .mini-player.active { display: flex; transform: translateY(0) scale(1); opacity: 1; }
+
+        .player-info { flex: 1; overflow: hidden; }
+        .player-title { margin: 0 0 2px; font-size: 14px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .player-sub { margin: 0; font-size: 11px; color: var(--primary-dark); font-weight: 800; font-family: 'Poppins'; }
+
+        .player-controls { display: flex; align-items: center; gap: 10px; }
+        
+        .play-btn {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: var(--primary-grad); color: #000; border: none;
+            font-size: 18px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 15px var(--primary-glow), inset 2px 2px 5px rgba(255,255,255,0.5); 
+            cursor: pointer; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .play-btn:active { transform: scale(0.9); box-shadow: inset 4px 4px 10px rgba(0,0,0,0.2); }
+        .play-btn.playing { animation: pulse3D 2s infinite; }
+        @keyframes pulse3D { 0% { box-shadow: 0 0 0 0 var(--primary-glow); } 70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); } }
+
+        .close-player { background: var(--surface); border: none; color: var(--text-sub); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; box-shadow: var(--shadow-light-3d); transition: 0.3s; }
+        .close-player:active { box-shadow: var(--shadow-inset-3d); transform: scale(0.9); }
+
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.05); border-bottom-left-radius: var(--radius-xl); border-bottom-right-radius: var(--radius-xl); overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; background: var(--primary-grad); box-shadow: 0 0 10px var(--primary-glow); transition: width 0.1s linear; position: relative; }
+        .progress-bar::after { content: ''; position: absolute; top: 0; right: 0; width: 8px; height: 100%; background: #fff; box-shadow: 0 0 6px #fff; border-radius: 50%; }
+
+        /* =========================================
+           6. UTILS, SKELETONS & TOUR GUIDE
+           ========================================= */
+        .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--bg) 50%, var(--surface) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: var(--radius-lg); height: 95px; margin-bottom: 16px; box-shadow: var(--shadow-light-3d); }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        #sys-toast { position: fixed; top: calc(90px + var(--safe-top)); left: 50%; transform: translateX(-50%) scale(0.8); background: var(--surface-float); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); color: var(--text-main); padding: 12px 25px; border-radius: 30px; font-size: 13px; font-weight: 800; opacity: 0; pointer-events: none; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 9999; box-shadow: 0 15px 35px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(255,255,255,0.4); display: flex; align-items: center; gap: 10px; }
+        #sys-toast i { color: var(--primary-dark); font-size: 16px; text-shadow: 0 0 5px var(--primary-glow); }
+        #sys-toast.show { opacity: 1; transform: translateX(-50%) scale(1) translateY(10px); }
+
+        /* Tour Guide CSS */
+        #tour-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+        .tour-popup { position: fixed; z-index: 9999; background: var(--surface); padding: 25px; border-radius: var(--radius-lg); box-shadow: 0 20px 40px rgba(0,0,0,0.2), var(--shadow-light-3d); width: 90%; max-width: 320px; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.9); opacity: 0; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-align: center; border: 1px solid var(--primary); }
+        .tour-popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .tour-popup h3 { margin: 0 0 10px; color: var(--primary-dark); font-weight: 900; }
+        .tour-popup p { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; line-height: 1.5; }
+        .tour-popup button { background: var(--primary-grad); border: none; padding: 12px 25px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 5px 15px var(--primary-glow); transition: 0.3s; width: 100%; }
+        .tour-popup button:active { transform: scale(0.95); }
+        .tour-highlight { position: relative; z-index: 9999 !important; pointer-events: none; box-shadow: 0 0 0 4px var(--surface), 0 0 0 8px var(--primary) !important; border-radius: inherit; transition: box-shadow 0.3s; background: var(--surface); }
+
+    </style>
+</head>
+<body>
+
+    <div id="google_translate_element"></div>
+
+    <div id="sys-toast"><i class="fas fa-info-circle"></i> <span id="toast-msg">መልዕክት</span></div>
+
+    <div id="tour-overlay" style="display:none;"></div>
+    <div id="tour-popup" class="tour-popup" style="display:none;">
+        <h3 id="tour-title">እንኳን ደህና መጡ!</h3>
+        <p id="tour-desc">አዲሱን እና የተሻሻለው የውዳሴ መዝሙር ገፅ ገጽታዎችን በአጭሩ እንቃኝ።</p>
+        <button id="tour-next-btn" onclick="nextTourStep()">ቀጣይ <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <header class="hymnal-header">
+        <div class="header-top">
+            <div class="page-title">
+                <h1 id="ui-title" class="notranslate">የውዳሴ መዝሙር</h1>
+                <span id="ui-subtitle" class="notranslate">EA Youth Union SDA Hymnal</span>
+            </div>
+            <div class="header-actions">
+                <div class="lang-wrapper">
+                    <i class="fas fa-globe"></i>
+                    <select class="lang-selector notranslate" id="lang-select" onchange="HymnalEngine.changeLanguage()">
+                        <option value="am">አማርኛ</option>
+                        <option value="or">Afaan Oromoo</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="action-btn" onclick="HymnalEngine.toggleTheme()" id="theme-btn-tour">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="በቁጥር ወይም በርዕስ ይፈልጉ..." onkeyup="HymnalEngine.handleSearch()">
+            <i class="fas fa-search"></i>
+        </div>
+    </header>
+
+    <div class="list-info">
+        <span id="total-count">መዝሙሮችን በማዘጋጀት ላይ...</span>
+        <span id="sync-status" style="color: var(--primary-dark);"><i class="fas fa-sync fa-spin"></i>ማደስ</span>
+    </div>
+
+    <main class="hymnal-container" id="hymns-list">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+    </main>
+
+    <div class="lyrics-modal" id="lyrics-modal">
+        <div class="lyrics-header">
+            <div class="action-btn notranslate" onclick="HymnalEngine.closeLyrics()"><i class="fas fa-arrow-left"></i></div>
+            <div class="lyrics-title-box">
+                <h2 id="modal-hymn-num" class="notranslate">#000</h2>
+                <p id="modal-hymn-title" class="notranslate">ርዕስ</p>
+            </div>
+            <div style="width: 44px;"></div>
+        </div>
+        
+        <div class="lyrics-tools">
+            <button class="tool-btn notranslate" onclick="HymnalEngine.adjustFontSize(-2)"><i class="fas fa-minus"></i> <span id="ui-txt-shrink">አሳንስ</span></button>
+            <button class="tool-btn notranslate" onclick="HymnalEngine.toggleAutoScroll()"><i class="fas fa-angle-double-down"></i> <span id="ui-txt-scroll">Auto-Scroll</span></button>
+            <button class="tool-btn notranslate" onclick="HymnalEngine.adjustFontSize(2)"><i class="fas fa-plus"></i> <span id="ui-txt-grow">አጉላ</span></button>
+        </div>
+
+        <div class="lyrics-body notranslate" id="lyrics-content">
+        </div>
+    </div>
+
+    <div class="mini-player" id="mini-player">
+        <div class="hymn-number notranslate" id="player-num" style="width:40px; height:40px; font-size:16px; border-radius: 12px;">#1</div>
+        <div class="player-info">
+            <h4 class="player-title notranslate" id="player-title">Track Title</h4>
+            <p class="player-sub notranslate" id="player-time">0:00 / 0:00</p>
+        </div>
+        <div class="player-controls">
+            <button class="play-btn notranslate" id="main-play-btn" onclick="HymnalEngine.togglePlay()"><i class="fas fa-play" id="play-icon"></i></button>
+            <button class="close-player notranslate" onclick="HymnalEngine.closePlayer()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="player-progress"></div>
+        </div>
+        <audio id="hymn-audio" style="display:none;"></audio>
+    </div>
+
+    <script src="nav.js"></script>
+    <script src="ea-keyboard.js"></script>
+    <script src="ea.js"></script>
+    <script>
+        const db = firebase.database();
+
+        // ----------------------------------------------------
+        // TOUR GUIDE LOGIC
+        // ----------------------------------------------------
+        const tourSteps = [
+            { target: null, title: "እንኳን ደህና መጡ!", desc: "ወደ አዲሱ የ EA መዝሙር ሲስተም እንኳን ደህና መጡ። አዳዲስ ነገሮችን በአጭሩ እንይ።" },
+            { target: '.lang-wrapper', title: "ቋንቋ እና ትርጉም", desc: "እዚህ ላይ ቋንቋ ሲቀይሩ መዝሙሮቹ እና ግጥሞቹ በሙሉ አውቶማቲካሊ ይተረጎማሉ!" },
+            { target: '.search-box', title: "ስማርት ፍለጋ", desc: "የመዝሙር ቁጥር ወይም ርዕስ በማስገባት በቀላሉ መፈለግ ይችላሉ።" },
+            { target: '#theme-btn-tour', title: "የማታ ገጽታ", desc: "አይኖን ላለመጉዳት ይህንን በመጫን የዳርክ ሞድ (Dark Mode) መጠቀም ይችላሉ።" }
+        ];
+        let currentTourStep = 0;
+
+        function startTour() {
+            if (localStorage.getItem('ea_hymnal_tour_done')) return;
+            document.getElementById('tour-overlay').style.display = 'block';
+            document.getElementById('tour-popup').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('tour-overlay').style.opacity = '1';
+                renderTourStep();
+            }, 50);
+        }
+
+        function renderTourStep() {
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+            const step = tourSteps[currentTourStep];
+            document.getElementById('tour-title').innerText = step.title;
+            document.getElementById('tour-desc').innerText = step.desc;
+            const btn = document.getElementById('tour-next-btn');
+            btn.innerHTML = currentTourStep === tourSteps.length - 1 ? 'ጨረስኩ <i class="fas fa-check"></i>' : 'ቀጣይ <i class="fas fa-arrow-right"></i>';
+
+            if(step.target) {
+                const targetEl = document.querySelector(step.target);
+                if(targetEl) {
+                    targetEl.classList.add('tour-highlight');
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            document.getElementById('tour-popup').classList.add('show');
+        }
+
+        function nextTourStep() {
+            document.getElementById('tour-popup').classList.remove('show');
+            setTimeout(() => {
+                if (currentTourStep >= tourSteps.length - 1) {
+                    endTour();
+                } else {
+                    currentTourStep++;
+                    renderTourStep();
+                }
+            }, 300);
+        }
+
+        function endTour() {
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+            document.getElementById('tour-overlay').style.opacity = '0';
+            document.getElementById('tour-popup').classList.remove('show');
+            
+            setTimeout(() => {
+                document.getElementById('tour-overlay').style.display = 'none';
+                document.getElementById('tour-popup').style.display = 'none';
+                localStorage.setItem('ea_hymnal_tour_done', 'true');
+            }, 400);
+        }
+
+        // ----------------------------------------------------
+        // MAIN HYMNAL ENGINE
+        // ----------------------------------------------------
+        const HymnalEngine = {
+            state: {
+                lang: 'am', // 'am', 'or', 'en'
+                hymns: [],
+                filtered: [],
+                fontSize: 18,
+                isScrolling: false,
+                scrollInterval: null,
+                currentAudio: null,
+                isPlaying: false
+            },
+
+            dict: {
+                am: { title: "የውዳሴ መዝሙር", sub: "EA Youth Union SDA Hymnal", search: "በቁጥር ወይም በርዕስ ይፈልጉ...", count: "መዝሙሮች", audio: "Audio አለው", shrink: "አሳንስ", grow: "አጉላ", scroll: "Auto-Scroll", offline: ".." },
+                or: { title: "Faarfannaa SDA", sub: "Giddugala Faarfannaa", search: "Lakkoofsa ykn Mata dureen barbaadi...", count: "Faarfannaa", audio: "Sagalee Qaba", shrink: "Xiqqeessi", grow: "Guddisi", scroll: "Ofiin-Siqsi", offline: "Sarbii Ala (Offline)" },
+                en: { title: "SDA Hymnal", sub: "EA Premium Edition", search: "Search by number or title...", count: "Hymns", audio: "Has Audio", shrink: "Shrink", grow: "Grow", scroll: "Auto-Scroll", offline: "Offline Mode" }
+            },
+
+            init() {
+                this.applyTheme();
+                this.loadCache();
+                this.syncFirebase();
+                this.setupAudioListeners();
+                
+                this.ZoomEngine.init();
+
+                if(typeof EAKeyboard !== 'undefined') EAKeyboard.init();
+                if(typeof AppNavigation !== 'undefined') AppNavigation.init();
+
+                setTimeout(startTour, 1500);
+            },
+
+            showToast(msg, icon="info-circle") {
+                const t = document.getElementById('sys-toast');
+                document.getElementById('toast-msg').innerText = msg;
+                t.innerHTML = `<i class="fas fa-${icon}"></i> <span>${msg}</span>`;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3000);
+            },
+
+            changeLanguage() {
+                this.state.lang = document.getElementById('lang-select').value;
+                const d = this.dict[this.state.lang];
+                
+                document.getElementById('ui-title').innerText = d.title;
+                document.getElementById('ui-subtitle').innerText = d.sub;
+                document.getElementById('search-input').placeholder = d.search;
+                document.getElementById('ui-txt-shrink').innerText = d.shrink;
+                document.getElementById('ui-txt-grow').innerText = d.grow;
+                document.getElementById('ui-txt-scroll').innerText = d.scroll;
+                
+                // ከ renderList() ይልቅ handleSearch() እንጠራለን (Strict Filtering እንዲሰራ)
+                this.handleSearch();
+
+                // Google Translate for parts not in DB yet
+                let translateTarget = this.state.lang === 'or' ? 'om' : (this.state.lang === 'am' ? 'am' : 'en');
+                setTimeout(() => {
+                    this.triggerGoogleTranslate(translateTarget);
+                }, 300);
+            },
+
+            triggerGoogleTranslate(langCode) {
+                let selectObj = document.querySelector('select.goog-te-combo');
+                if (selectObj) {
+                    selectObj.value = langCode;
+                    selectObj.dispatchEvent(new Event('change'));
+                }
+            },
+
+            loadCache() {
+                const cached = localStorage.getItem('ea_hymnal_data_v4');
+                if(cached) {
+                    try {
+                        this.state.hymns = JSON.parse(cached);
+                        this.handleSearch();
+                        if(!navigator.onLine) {
+                            document.getElementById('sync-status').innerHTML = `<i class="fas fa-wifi-slash"></i> ${this.dict[this.state.lang].offline}`;
+                            document.getElementById('sync-status').style.color = 'var(--danger)';
+                        }
+                    } catch(e) { console.error("Cache Error", e); }
+                }
+            },
+
+            syncFirebase() {
+                if(!navigator.onLine) return;
+                
+                db.ref('hymns_data').on('value', snap => {
+                    const data = snap.val();
+                    if(data) {
+                        const arr = Object.keys(data)
+                            .map(k => ({id: k, ...data[k]}))
+                            .sort((a,b) => parseInt(a.number) - parseInt(b.number));
+                            
+                        this.state.hymns = arr;
+                        
+                        try {
+                            localStorage.setItem('ea_hymnal_data_v4', JSON.stringify(arr));
+                        } catch (e) {
+                            console.warn("Storage Quota Exceeded, clearing old cache...", e);
+                            localStorage.clear();
+                            localStorage.setItem('ea_hymnal_data_v4', JSON.stringify(arr));
+                        }
+                        
+                        this.handleSearch();
+                        document.getElementById('sync-status').innerHTML = `<i class="fas fa-check-circle"></i> Synced`;
+                        document.getElementById('sync-status').style.color = '#00b894';
+                    }
+                });
+
+                db.ref('SystemConfig').on('value', snap => {
+                    const config = snap.val() || {};
+                    const isForce = config.forceSabbath === true || config.forceSabbath === "true";
+                    const isAuto = config.autoSabbath === true || config.autoSabbath === "true";
+                    
+                    const eatTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Addis_Ababa"}));
+                    const isSaturday = eatTime.getDay() === 6;
+
+                    if(isForce || (isAuto && isSaturday)) {
+                        document.body.classList.add('sabbath-mode');
+                    } else {
+                        document.body.classList.remove('sabbath-mode');
+                    }
+                });
+            },
+
+            // =========================================
+            // LANGUAGE FILTERING & MAPPING LOGIC
+            // =========================================
+            
+            hasLanguageContent(hymn, lang) {
+                // በመረጡት ቋንቋ ዳታ ካለው ብቻ እንዲያሳልፍ የሚያደርግ ኮድ
+                // ለአማርኛ የድሮ መዝሙሮች እንዳይጠፉ (title እና lyrics) እንደ fallback ተጠቅመናል
+                if (lang === 'am') return !!(hymn.title_am || hymn.lyrics_am || hymn.language === 'am' || hymn.title || hymn.lyrics);
+                if (lang === 'or') return !!(hymn.title_or || hymn.lyrics_or || hymn.language === 'or');
+                if (lang === 'en') return !!(hymn.title_en || hymn.lyrics_en || hymn.language === 'en');
+                return false;
+            },
+
+            getTitle(hymn) {
+                // የድሮው Fallback ቀርቶ የየራሳቸው ብቻ እንዲመጣ ተደርጓል
+                if(this.state.lang === 'am') return hymn.title_am || hymn.title || "ርዕስ የለም";
+                if(this.state.lang === 'or') return hymn.title_or || "Mata duree hin qabu";
+                if(this.state.lang === 'en') return hymn.title_en || "No Title";
+                return "ርዕስ የለም";
+            },
+
+            getLyrics(hymn) {
+                if(this.state.lang === 'am') return hymn.lyrics_am || hymn.lyrics || "ግጥም አልገባም";
+                if(this.state.lang === 'or') return hymn.lyrics_or || "Walaloo hin jiru";
+                if(this.state.lang === 'en') return hymn.lyrics_en || "Lyrics not available";
+                return "ግጥም አልገባም";
+            },
+
+            getAudio(hymn) {
+                if(this.state.lang === 'am') return hymn.audioUrl_am || hymn.audioUrl;
+                if(this.state.lang === 'or') return hymn.audioUrl_or || hymn.audioUrl;
+                if(this.state.lang === 'en') return hymn.audioUrl_en || hymn.audioUrl;
+                return hymn.audioUrl;
+            },
+
+            renderList() {
+                const list = document.getElementById('hymns-list');
+                const count = document.getElementById('total-count');
+                count.innerText = `${this.state.filtered.length} ${this.dict[this.state.lang].count}`;
+                
+                if(this.state.filtered.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding:60px; opacity:0.6;"><i class="fas fa-search" style="font-size:50px; margin-bottom:20px; color: var(--primary-dark);"></i><p style="font-weight:700; font-size:16px;">በዚህ ቋንቋ መዝሙር አልተገኘም / No results</p></div>`;
+                    return;
+                }
+
+                let html = '';
+                const renderLimit = this.state.filtered.length; 
+                
+                for(let i=0; i<renderLimit; i++) {
+                    const h = this.state.filtered[i];
+                    const title = this.getTitle(h);
+                    const audioUrl = this.getAudio(h);
+                    const hasAudio = audioUrl ? `<span class="audio-badge"><i class="fas fa-music"></i> ${this.dict[this.state.lang].audio}</span>` : '';
+                    
+                    const delay = Math.min(i * 0.05, 1);
+                    
+                    html += `
+                    <div class="hymn-card" style="animation: fadeUp3D 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: ${delay}s; opacity: 0;" onclick="HymnalEngine.openLyrics('${h.id}')">
+                        <div class="hymn-number notranslate">${h.number || '-'}</div>
+                        <div class="hymn-details">
+                            <h3 class="hymn-title notranslate">${title}</h3>
+                            <div class="hymn-meta">
+                                <span class="notranslate"><i class="fas fa-book-open" style="color:var(--primary-dark);"></i> ${h.category || 'Hymn'}</span>
+                                ${hasAudio}
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                list.innerHTML = html;
+            },
+
+            handleSearch() {
+                const q = document.getElementById('search-input').value.toLowerCase().trim();
+                
+                // 1. መጀመሪያ በመረጥነው ቋንቋ ብቻ እናጣራለን (Strict Separation)
+                let langFiltered = this.state.hymns.filter(h => this.hasLanguageContent(h, this.state.lang));
+
+                // 2. ከዚያ የ text ፍለጋውን እንሰራለን
+                if(!q) {
+                    this.state.filtered = langFiltered;
+                } else {
+                    this.state.filtered = langFiltered.filter(h => 
+                        (h.number && h.number.toString().includes(q)) || 
+                        (h.title_am && h.title_am.toLowerCase().includes(q)) ||
+                        (h.title_or && h.title_or.toLowerCase().includes(q)) ||
+                        (h.title_en && h.title_en.toLowerCase().includes(q)) ||
+                        (h.category && h.category.toLowerCase().includes(q))
+                    );
+                }
+                this.renderList();
+            },
+
+            openLyrics(id) {
+                const hymn = this.state.hymns.find(h => h.id === id);
+                if(!hymn) return;
+
+                document.getElementById('modal-hymn-num').innerText = `#${hymn.number || ''}`;
+                document.getElementById('modal-hymn-title').innerText = this.getTitle(hymn);
+                
+                let rawLyrics = this.getLyrics(hymn);
+                let formattedHTML = '';
+                
+                const stanzas = rawLyrics.split('\n\n');
+                stanzas.forEach((stanza, index) => {
+                    const delay = index * 0.15;
+                    if(stanza.trim().startsWith('[C]')) {
+                        formattedHTML += `<div class="verse-wrapper" style="animation: fadeUp3DLyrics 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${delay}s backwards;"><div class="chorus">${stanza.replace('[C]', '').replace(/\n/g, '<br>')}</div></div>`;
+                    } else {
+                        formattedHTML += `<div class="verse-wrapper" style="animation: fadeUp3DLyrics 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) ${delay}s backwards;"><div class="verse">${stanza.replace(/\n/g, '<br>')}</div></div>`;
+                    }
+                });
+
+                document.getElementById('lyrics-content').innerHTML = formattedHTML;
+                document.getElementById('lyrics-content').scrollTop = 0;
+                
+                if(this.getAudio(hymn)) {
+                    this.loadAudio(hymn);
+                }
+
+                document.getElementById('lyrics-modal').classList.add('active');
+                document.body.style.overflow = 'hidden'; 
+                
+                history.pushState({modal: 'lyrics'}, "Lyrics");
+            },
+
+            closeLyrics() {
+                this.stopAutoScroll();
+                document.getElementById('lyrics-modal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+                this.closePlayer();
+            },
+
+            ZoomEngine: {
+                currentZoom: 18, 
+                minZoom: 14,
+                maxZoom: 45,
+                
+                init() {
+                    const savedZoom = localStorage.getItem('ea_hymnal_zoom_v3');
+                    if(savedZoom) this.currentZoom = parseFloat(savedZoom);
+                    this.applyZoom();
+                    this.bindGestures();
+                },
+
+                bindGestures() {
+                    let initialDist = 0;
+                    let startZoom = this.currentZoom;
+                    const container = document.getElementById('lyrics-content');
+
+                    if(!container) return;
+
+                    container.addEventListener('touchstart', (e) => {
+                        if (e.touches.length === 2) {
+                            initialDist = Math.hypot(
+                                e.touches[0].pageX - e.touches[1].pageX,
+                                e.touches[0].pageY - e.touches[1].pageY
+                            );
+                            startZoom = this.currentZoom;
+                        }
+                    }, { passive: false });
+
+                    container.addEventListener('touchmove', (e) => {
+                        if (e.touches.length === 2 && initialDist > 0) {
+                            e.preventDefault(); 
+                            const currentDist = Math.hypot(
+                                e.touches[0].pageX - e.touches[1].pageX,
+                                e.touches[0].pageY - e.touches[1].pageY
+                            );
+                            
+                            const scale = currentDist / initialDist;
+                            let newZoom = startZoom * scale;
+                            
+                            this.currentZoom = Math.min(Math.max(newZoom, this.minZoom), this.maxZoom);
+                            requestAnimationFrame(() => this.applyZoom());
+                        }
+                    }, { passive: false });
+
+                    container.addEventListener('touchend', (e) => {
+                        if (e.touches.length < 2) {
+                            initialDist = 0;
+                            localStorage.setItem('ea_hymnal_zoom_v3', this.currentZoom.toFixed(2));
+                            HymnalEngine.state.fontSize = this.currentZoom;
+                        }
+                    });
+                },
+
+                applyZoom() {
+                    const lyricsEl = document.getElementById('lyrics-content');
+                    if(lyricsEl) lyricsEl.style.fontSize = `${this.currentZoom}px`;
+                }
+            },
+
+            adjustFontSize(val) {
+                this.ZoomEngine.currentZoom = Math.min(Math.max(this.ZoomEngine.currentZoom + val, this.ZoomEngine.minZoom), this.ZoomEngine.maxZoom);
+                this.ZoomEngine.applyZoom();
+                localStorage.setItem('ea_hymnal_zoom_v3', this.ZoomEngine.currentZoom.toFixed(2));
+                this.state.fontSize = this.ZoomEngine.currentZoom;
+            },
+
+            toggleAutoScroll() {
+                const box = document.getElementById('lyrics-content');
+                if(this.state.isScrolling) {
+                    this.stopAutoScroll();
+                    this.showToast("Auto-scroll stopped", "pause-circle");
+                } else {
+                    this.state.isScrolling = true;
+                    this.state.scrollInterval = setInterval(() => {
+                        box.scrollTop += 1;
+                        if(box.scrollTop + box.clientHeight >= box.scrollHeight) this.stopAutoScroll();
+                    }, 50); 
+                    this.showToast("Auto-scroll started", "angle-double-down");
+                }
+            },
+
+            stopAutoScroll() {
+                clearInterval(this.state.scrollInterval);
+                this.state.isScrolling = false;
+            },
+
+            setupAudioListeners() {
+                const audio = document.getElementById('hymn-audio');
+                const prog = document.getElementById('player-progress');
+                const timeStr = document.getElementById('player-time');
+                const icon = document.getElementById('play-icon');
+                const btn = document.getElementById('main-play-btn');
+
+                audio.addEventListener('timeupdate', () => {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    prog.style.width = `${percent}%`;
+                    timeStr.innerText = `${this.formatTime(audio.currentTime)} / ${this.formatTime(audio.duration)}`;
+                });
+
+                audio.addEventListener('ended', () => {
+                    this.state.isPlaying = false;
+                    icon.className = 'fas fa-play';
+                    btn.classList.remove('playing');
+                });
+            },
+
+            loadAudio(hymn) {
+                const audio = document.getElementById('hymn-audio');
+                const btn = document.getElementById('main-play-btn');
+                const accurateAudio = this.getAudio(hymn);
+                
+                if(!accurateAudio) return; 
+                
+                audio.src = accurateAudio;
+                document.getElementById('player-num').innerText = `#${hymn.number || ''}`;
+                document.getElementById('player-title').innerText = this.getTitle(hymn);
+                document.getElementById('mini-player').classList.add('active');
+                
+                this.state.currentAudio = hymn;
+                this.state.isPlaying = false;
+                document.getElementById('play-icon').className = 'fas fa-play';
+                btn.classList.remove('playing');
+            },
+
+            togglePlay() {
+                const audio = document.getElementById('hymn-audio');
+                const icon = document.getElementById('play-icon');
+                const btn = document.getElementById('main-play-btn');
+                if(!audio.src) return;
+
+                if(this.state.isPlaying) {
+                    audio.pause();
+                    icon.className = 'fas fa-play';
+                    btn.classList.remove('playing');
+                    this.state.isPlaying = false;
+                } else {
+                    audio.play();
+                    icon.className = 'fas fa-pause';
+                    btn.classList.add('playing');
+                    this.state.isPlaying = true;
+                }
+            },
+
+            closePlayer() {
+                const audio = document.getElementById('hymn-audio');
+                const btn = document.getElementById('main-play-btn');
+                audio.pause();
+                this.state.isPlaying = false;
+                btn.classList.remove('playing');
+                document.getElementById('mini-player').classList.remove('active');
+            },
+
+            formatTime(seconds) {
+                if(isNaN(seconds)) return "0:00";
+                const m = Math.floor(seconds / 60);
+                const s = Math.floor(seconds % 60);
+                return `${m}:${s < 10 ? '0' : ''}${s}`;
+            },
+
+            applyTheme() {
+                if(localStorage.getItem('ea_theme') === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('theme-icon').className = 'fas fa-sun';
+                }
+            },
+
+            toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('ea_theme', isDark ? 'dark' : 'light');
+                document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => HymnalEngine.init());
+        
+        window.onpopstate = (e) => {
+            if(document.getElementById('lyrics-modal').classList.contains('active')) {
+                HymnalEngine.closeLyrics();
+            }
+        };
+
+        if(typeof EAKeyboard !== 'undefined') {
+            document.getElementById('search-input').addEventListener('focus', () => EAKeyboard.show());
+            document.getElementById('search-input').addEventListener('blur', () => EAKeyboard.hide());
+        }
+
+    </script>
+        <script src="ea.js"></script>
+</body>
+</html>

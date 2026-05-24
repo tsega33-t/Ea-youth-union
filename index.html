@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EA Youth Union - መግቢያ</title>
+    
+    <script>
+        if (localStorage.getItem('ea_user_session')) {
+            window.location.replace("home.html");
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&family=Noto+Sans+Ethiopic:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="logo.png">
+
+    <style>
+        /* =========================================
+           CORE SYSTEM VARIABLES & NATIVE OPTIMIZATION
+           ========================================= */
+        :root {
+            --accent: #d4af37;
+            --accent-glow: rgba(212, 175, 55, 0.6);
+            --accent-dark: #a67c00;
+            --bg-dark: #050505;
+            --bg-deep: #000000;
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --success: #00e676;
+            --error: #ff4757;
+            --sabbath-blue: #00f3ff;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none; -webkit-user-select: none;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        html, body {
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            display: flex; justify-content: center; align-items: center; 
+            font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; 
+            background: var(--bg-deep); overflow: hidden; color: var(--text-main);
+            overscroll-behavior: none; 
+            perspective: 1200px;
+        }
+
+        input, select {
+            user-select: auto; -webkit-user-select: auto;
+        }
+
+        body::before {
+            content: ''; position: absolute; inset: -20%;
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.12) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+            z-index: -1; animation: bgFloat 12s infinite alternate ease-in-out;
+            transform: translateZ(0); will-change: transform;
+        }
+
+        @keyframes bgFloat {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* =========================================
+           MASSIVE 3D CINEMATIC SPLASH SCREEN
+           ========================================= */
+        #app-splash {
+            position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            transform-style: preserve-3d;
+        }
+
+        .splash-logo-container { 
+            position: relative; display: flex; justify-content: center; align-items: center;
+            width: 250px; height: 250px; 
+        }
+        
+        .splash-logo {
+            width: 180px; height: 180px; object-fit: contain; position: relative; z-index: 10;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,1)) drop-shadow(0 0 20px var(--accent-glow));
+            animation: splashEntrance 1.2s var(--ease-spring) forwards, massivePulse 3s infinite alternate ease-in-out 1.2s;
+            will-change: transform, filter;
+        }
+
+        .splash-ring {
+            position: absolute; border-radius: 50%;
+            border: 2px solid transparent; border-top-color: var(--accent); border-bottom-color: var(--accent);
+            opacity: 0.6; animation: spinRing linear infinite;
+            transform: translateZ(0); will-change: transform;
+        }
+        .ring-1 { width: 220px; height: 220px; animation-duration: 3s; }
+        .ring-2 { width: 260px; height: 260px; border: 1px dashed rgba(212, 175, 55, 0.3); animation-duration: 6s; animation-direction: reverse; }
+
+        .splash-text { 
+            margin-top: 40px; font-weight: 900; font-size: 24px; letter-spacing: 6px;
+            background: linear-gradient(135deg, #fff, var(--accent), #fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeInUp 0.8s 0.6s var(--ease-out-expo) forwards;
+            filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.4));
+            text-align: center;
+        }
+
+        .modern-loader {
+            margin-top: 35px; width: 160px; height: 4px; background: rgba(255,255,255,0.1);
+            border-radius: 10px; overflow: hidden; position: relative; opacity: 0;
+            animation: fadeIn 0.5s 0.9s forwards;
+        }
+        
+        .modern-loader::after {
+            content: ''; position: absolute; left: -50%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 10px; animation: loadBar 1.2s ease-in-out infinite;
+        }
+
+        .splash-exit { opacity: 0; transform: scale(1.15); pointer-events: none; }
+
+        /* =========================================
+           PREMIUM 3D LOGIN CARD
+           ========================================= */
+        .login-card {
+            width: 90%; max-width: 420px; padding: 40px 30px;
+            background: linear-gradient(145deg, rgba(20,20,20,0.85), rgba(5,5,5,0.98));
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); 
+            border-radius: 35px; border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 2px 20px rgba(255,255,255,0.05); 
+            opacity: 0; transform: translateY(50px) scale(0.95); 
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-spring);
+            position: relative; z-index: 100;
+        }
+
+        .login-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+        .login-card h2 {
+            margin: 0 0 5px 0; font-weight: 900; font-size: 28px;
+            background: linear-gradient(to right, #ffffff, var(--accent), #ffffff);
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shineText 4s linear infinite; letter-spacing: -0.5px;
+        }
+
+        .login-card p { font-size: 13px; color: var(--text-dim); margin-bottom: 35px; letter-spacing: 0.5px; font-weight: 600;}
+
+        .input-group { margin-bottom: 22px; position: relative; text-align: left; }
+        .input-group label { 
+            display: block; font-size: 11px; color: var(--accent); 
+            margin-bottom: 8px; margin-left: 15px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1.5px;
+        }
+        
+        .input-group i.icon-main { 
+            position: absolute; left: 18px; bottom: 18px; color: var(--accent); 
+            z-index: 5; font-size: 16px; transition: 0.3s var(--ease-out-expo);
+        }
+        
+        input, select {
+            width: 100%; padding: 18px 16px 18px 50px; 
+            background: rgba(0, 0, 0, 0.5);
+            border: 1.5px solid rgba(255,255,255,0.06); 
+            border-radius: 20px; color: white;
+            font-family: inherit; font-size: 15px; font-weight: 600;
+            transition: all 0.3s var(--ease-out-expo); outline: none; 
+            appearance: none; -webkit-appearance: none;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        select { padding-right: 40px; cursor: pointer; }
+        .select-arrow { position: absolute; right: 18px; bottom: 18px; color: var(--text-dim); pointer-events: none; font-size: 14px; }
+
+        input:focus, select:focus { 
+            border-color: var(--accent); background: rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25), inset 0 2px 10px rgba(0,0,0,0.5);
+            transform: translateY(-2px);
+        }
+
+        input:focus + i.icon-main { transform: scale(1.15); color: white; }
+
+        .phone-wrapper { display: flex; gap: 10px; }
+        .prefix { 
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 16px; background: rgba(0,0,0,0.7); 
+            border-radius: 20px; font-weight: 800; color: var(--accent); 
+            border: 1.5px solid rgba(255,255,255,0.06); font-size: 15px;
+        }
+
+        .submit-btn {
+            width: 100%; padding: 20px; border: none; border-radius: 22px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #000; font-weight: 900; font-size: 16px; cursor: pointer;
+            box-shadow: 0 15px 30px var(--accent-glow), inset 0 2px 0px rgba(255,255,255,0.6); 
+            margin-top: 15px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase; letter-spacing: 2px; position: relative; overflow: hidden;
+        }
+
+        .submit-btn:active { 
+            transform: scale(0.95); box-shadow: 0 5px 15px rgba(212,175,55,0.4); 
+        }
+
+        #success-overlay, #maintenance-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 90000; text-align: center; animation: fadeIn 0.4s ease forwards;
+        }
+
+        #status-pill {
+            position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            padding: 12px 25px; border-radius: 30px; font-size: 13px; background: rgba(255, 71, 87, 0.15); 
+            border: 1px solid var(--error); color: var(--error); display: flex; align-items: center; gap: 10px; 
+            z-index: 100000; transition: transform 0.5s var(--ease-spring); font-weight: 800;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        }
+        #status-pill.active { transform: translateX(-50%) translateY(0); }
+
+        #loginLoader { 
+            display: none; margin: 0 auto; width: 26px; height: 26px; 
+            border: 4px solid rgba(0,0,0,0.2); border-top-color: #000; 
+            border-radius: 50%; animation: spinRing 0.8s linear infinite; 
+        }
+
+        /* =========================================
+           CUSTOM ALERT OVERLAY CSS (NEW ADDITION)
+           ========================================= */
+        @keyframes zoomInAlert { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        
+        #custom-alert-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 999999;
+        }
+        .custom-alert-box {
+            background: linear-gradient(145deg, rgba(20,20,20,0.95), rgba(5,5,5,0.98));
+            padding: 35px 25px; border-radius: 25px; border: 1px solid rgba(212,175,55,0.3);
+            text-align: center; max-width: 85%; width: 360px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 2px 15px rgba(212,175,55,0.05);
+            animation: zoomInAlert 0.4s var(--ease-spring);
+        }
+        .custom-alert-title {
+            color: var(--accent); margin-top: 0; font-weight: 900; font-size: 22px; 
+            letter-spacing: 1px; margin-bottom: 15px;
+        }
+        .custom-alert-msg { 
+            color: #fff; font-size: 15px; line-height: 1.6; margin-bottom: 25px; 
+            font-weight: 500; opacity: 0.9; 
+        }
+        .custom-alert-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border: none; padding: 14px 35px; border-radius: 20px; color: #000; 
+            font-weight: 900; cursor: pointer; font-size: 15px; text-transform: uppercase; 
+            box-shadow: 0 10px 20px var(--accent-glow); transition: 0.2s;
+        }
+        .custom-alert-btn:active { 
+            transform: scale(0.95); box-shadow: 0 5px 10px rgba(212,175,55,0.4); 
+        }
+
+        /* Animations */
+        @keyframes splashEntrance { 0% { transform: scale(0.5); opacity: 0; filter: blur(20px); } 100% { transform: scale(1); opacity: 1; filter: blur(0); } }
+        @keyframes massivePulse { 0% { filter: drop-shadow(0 20px 40px rgba(0,0,0,1)) drop-shadow(0 0 20px var(--accent-glow)); transform: scale(1); } 100% { filter: drop-shadow(0 30px 50px rgba(0,0,0,1)) drop-shadow(0 0 50px var(--accent)); transform: scale(1.05) translateY(-5px); } }
+        @keyframes spinRing { to { transform: rotate(360deg); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes loadBar { 100% { left: 100%; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shineText { to { background-position: 200% center; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+        body.sabbath-mode { --accent: var(--sabbath-blue); --accent-dark: #008eb3; --accent-glow: rgba(0, 243, 255, 0.5); }
+        .page-exit-active { opacity: 0; transform: scale(1.1); transition: 0.4s var(--ease-out-expo); pointer-events: none; filter: blur(10px); }
+        option { background: var(--bg-deep); color: white; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="status-pill"><i class="fas fa-wifi-slash"></i> <span>.</span></div>
+
+    <div id="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <h3 class="custom-alert-title">EA Youth Union</h3>
+            <p id="custom-alert-msg" class="custom-alert-msg"></p>
+            <button onclick="closeCustomAlert()" class="custom-alert-btn">እሺ</button>
+        </div>
+    </div>
+
+    <div id="app-splash">
+        <div class="splash-logo-container">
+            <div class="splash-ring ring-1"></div>
+            <div class="splash-ring ring-2"></div>
+            <img src="logo.png" alt="EA Logo" id="dynamicSplashLogo" class="splash-logo">
+        </div>
+        <h1 class="splash-text" id="dynamicSplashText">EA YOUTH UNION</h1>
+        <div class="modern-loader"></div>
+    </div>
+
+    <div class="login-card" id="loginCard">
+        <h2 id="mainGreeting">እንኳን ደህና መጡ</h2>
+        <p>EA Youth Union App</p>
+
+        <div class="input-group">
+            <label>ሙሉ ስም</label>
+            <i class="fas fa-user-circle icon-main"></i>
+            <input type="text" id="userName" placeholder="ለምሳሌ፡ ፀጋው ተስፋዬ" spellcheck="false" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>ስልክ ቁጥር</label>
+            <div class="phone-wrapper">
+                <div class="prefix">+251</div>
+                <div style="position:relative; flex:1;">
+                    <i class="fas fa-phone-alt icon-main" style="left:16px;"></i>
+                    <input type="number" id="userPhone" placeholder="9... ወይም 7..." style="padding-left:45px;" autocomplete="off">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>ከተማ</label>
+            <i class="fas fa-map-marker-alt icon-main"></i>
+            <input type="text" id="userCity" placeholder="ለምሳሌ፡ አዲስ አበባ" spellcheck="false" autocomplete="off">
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+            <div class="input-group" style="flex: 1;">
+                <label>ፆታ</label>
+                <i class="fas fa-venus-mars icon-main"></i>
+                <select id="userGender" onchange="updateGreetingUI()">
+                    <option value="male" selected>ወንድ</option>
+                    <option value="female">ሴት</option>
+                </select>
+                <i class="fas fa-chevron-down select-arrow"></i>
+            </div>
+
+            <div class="input-group" style="flex: 1;">
+                <label>እምነት</label>
+                <i class="fas fa-cross icon-main"></i>
+                <select id="userReligion">
+                    <option value="Adventist">አድቬንቲስት</option>
+                    <option value="Orthodox">ኦርቶዶክስ</option>
+                    <option value="Protestant">ፕሮቴስታንት</option>
+                   <option value="chatolic">ካቶሊክ</option>
+                    <option value="Other">ሌላ</option>
+                </select>
+                <i class="fas fa-chevron-down select-arrow"></i>
+            </div>
+        </div>
+
+        <button class="submit-btn" id="loginBtn" onclick="handleLogin()">
+            <span id="btnText">መተግበሪያውን ጀምር</span>
+            <div id="loginLoader"></div>
+        </button>
+        
+        <div style="margin-top: 25px; font-size: 10px; color: var(--accent); opacity: 0.6; letter-spacing: 2px; font-weight: 900; text-align: center;">100% SECURE & OFFLINE READY</div>
+    </div>
+
+    <div id="success-overlay">
+        <div style="width: 110px; height: 110px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(0,230,118,0.6); margin-bottom: 30px;">
+            <i class="fas fa-check" style="color: #000; font-size: 55px;"></i>
+        </div>
+        <h2 id="success-name" style="font-size: 34px; font-weight: 900; letter-spacing: 1px;">ተሳክቷል!</h2>
+        <p style="opacity: 0.8; margin-top: 15px; font-size: 16px; font-weight: 600;">ወደ መተግበሪያው እየገባ ነው...</p>
+    </div>
+
+    <div id="maintenance-overlay">
+        <i class="fas fa-tools" style="color: var(--accent); font-size: 70px; margin-bottom: 20px; filter: drop-shadow(0 10px 25px var(--accent-glow));"></i>
+        <h2 style="font-size: 28px; font-weight: 900;">ጊዜያዊ ጥገና</h2>
+        <p id="maint-msg" style="max-width: 320px; opacity: 0.8; line-height: 1.6; margin-top:10px; font-size: 15px;">መተግበሪያው ለጥቂት ጊዜያት ተዘግቷል፤ በቅርቡ እንመለሳለን።</p>
+        <button onclick="location.reload()" style="margin-top:35px; padding:18px 45px; background:linear-gradient(135deg, var(--accent), var(--accent-dark)); border:none; border-radius:30px; font-weight:900; font-size: 16px; color: #000; cursor: pointer; box-shadow: 0 10px 20px var(--accent-glow);">እንደገና ሞክር</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // ==========================================
+        // CUSTOM ALERT FUNCTIONS
+        // ==========================================
+        function showCustomAlert(message) {
+            document.getElementById('custom-alert-msg').innerText = message;
+            document.getElementById('custom-alert-overlay').style.display = 'flex';
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('custom-alert-overlay').style.display = 'none';
+        }
+
+        // Set dynamic splash text instantly from cache (Admin Feature)
+        const cachedText = localStorage.getItem('ea_splash_text');
+        if (cachedText) document.getElementById('dynamicSplashText').innerText = cachedText;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBERVjtc0sX_douQdDRL8amgLkbf9Rnvqs",
+            authDomain: "ea-youth-union-d22b1.firebaseapp.com",
+            databaseURL: "https://ea-youth-union-d22b1-default-rtdb.firebaseio.com",
+            projectId: "ea-youth-union-d22b1"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const Keys = { SESSION: 'ea_user_session', CONFIG: 'ea_sys_config' };
+
+        // ==========================================
+        // UI LOGIC & SYSTEM SYNC
+        // ==========================================
+        function updateGreetingUI() {
+            const gender = document.getElementById('userGender').value;
+            document.getElementById('mainGreeting').innerText = gender === 'female' ? "እንኳን ደህና መጣሽ" : "እንኳን ደህና መጣህ";
+        }
+
+        const AssetManager = {
+            init: function() {
+                this.updateNetworkStatus();
+                window.addEventListener('online', () => this.handleConnectionChange(true));
+                window.addEventListener('offline', () => this.handleConnectionChange(false));
+            },
+            handleConnectionChange: function(isOnline) {
+                const pill = document.getElementById('status-pill');
+                if (isOnline) {
+                    pill.classList.remove('active');
+                    SystemSync.init(); 
+                } else {
+                    pill.classList.add('active');
+                }
+            },
+            updateNetworkStatus: function() { 
+                if(!navigator.onLine) document.getElementById('status-pill').classList.add('active'); 
+            }
+        };
+
+        const SystemSync = {
+            init: function() {
+                const localConfig = localStorage.getItem(Keys.CONFIG);
+                if (localConfig) this.applyConfig(JSON.parse(localConfig));
+
+                if (navigator.onLine) {
+                    db.ref('SystemConfig').on('value', snap => {
+                        const config = snap.val();
+                        if (config) {
+                            localStorage.setItem(Keys.CONFIG, JSON.stringify(config));
+                            this.applyConfig(config);
+                            if (config.splashText) localStorage.setItem('ea_splash_text', config.splashText);
+                        }
+                    });
+                }
+            },
+            
+            applyConfig: function(config) {
+                const mScreen = document.getElementById('maintenance-overlay');
+                if (config.maintenanceMode === true || config.maintenanceMode === "true") {
+                    mScreen.style.display = 'flex';
+                    if (config.maintenanceMsg) document.getElementById('maint-msg').innerText = config.maintenanceMsg;
+                } else {
+                    mScreen.style.display = 'none';
+                }
+
+                // Sabbath Mode Check
+                const now = new Date();
+                const day = now.getDay();
+                const hour = now.getHours();
+                const isSabbathTime = (day === 5 && hour >= 18) || (day === 6 && hour < 18);
+                if ((config.autoSabbath === true || config.autoSabbath === "true") && isSabbathTime || (config.forceSabbath === true || config.forceSabbath === "true")) {
+                    document.body.classList.add('sabbath-mode');
+                } else {
+                    document.body.classList.remove('sabbath-mode');
+                }
+            }
+        };
+
+        // ==========================================
+        // OPTIMISTIC LOGIN & SECURE VALIDATION
+        // ==========================================
+        function handleLogin() {
+            if (!navigator.onLine) {
+                // Changed alert to showCustomAlert
+                showCustomAlert("⚠️ ለመጀመሪያ ጊዜ ወደ መተግበሪያው ሲገቡ (ሲመዘገቡ) የኢንተርኔት ግንኙነት ያስፈልጋል! አንዴ ከተመዘገቡ በኋላ ግን ያለ ኢንተርኔት ይሰራል::");
+                return;
+            }
+
+            const name = document.getElementById('userName').value.trim();
+            const phoneSuffix = document.getElementById('userPhone').value.trim();
+            const city = document.getElementById('userCity').value.trim();
+            const religion = document.getElementById('userReligion').value;
+            const gender = document.getElementById('userGender').value; 
+            
+            if (!name || !phoneSuffix || !city) { showShakeError(); return; }
+            if (!/^(9|7)\d{8}$/.test(phoneSuffix)) { 
+                // Changed alert to showCustomAlert
+                showCustomAlert("እባክዎ ትክክለኛ ስልክ ቁጥር ያስገቡ (ለምሳሌ 912345678)"); 
+                return; 
+            }
+
+            const btn = document.getElementById('loginBtn');
+            const loader = document.getElementById('loginLoader');
+            const btnText = document.getElementById('btnText');
+            
+            btn.disabled = true; btnText.style.display = 'none'; loader.style.display = 'block';
+
+            db.ref('Users/' + phoneSuffix).once('value').then(snap => {
+                const existingUser = snap.val();
+                if (existingUser && (existingUser.status === 'banned' || existingUser.status === 'blocked')) {
+                    // Changed alert to showCustomAlert
+                    showCustomAlert("ይቅርታ! መለያዎ በአስተዳዳሪ (Admin) ታግዷል።");
+                    btn.disabled = false; btnText.style.display = 'block'; loader.style.display = 'none';
+                    return;
+                }
+
+                const userData = {
+                    id: phoneSuffix,
+                    name: name, phone: "+251" + phoneSuffix, city: city, 
+                    religion: religion, gender: gender,
+                    lastLogin: new Date().toISOString(), version: "10.0", status: "active"
+                };
+
+                localStorage.setItem(Keys.SESSION, JSON.stringify(userData));
+                db.ref('Users/' + phoneSuffix).update(userData).catch(err => console.log("Background sync error:", err));
+                finalizeLogin(name, gender);
+
+            }).catch(err => {
+                // Changed alert to showCustomAlert
+                showCustomAlert("የሲስተም ስህተት አጋጥሟል። እባክዎ እንደገና ይሞክሩ።");
+                btn.disabled = false; btnText.style.display = 'block'; loader.style.display = 'none';
+            });
+        }
+
+        function finalizeLogin(name, gender) {
+            const firstName = name.split(" ")[0];
+            const dynamicGreeting = gender === 'female' ? "እንኳን ደህና መጣሽ " : "እንኳን ደህና መጣህ ";
+
+            document.getElementById('success-name').innerText = dynamicGreeting + firstName + "!";
+            
+            const card = document.getElementById('loginCard');
+            card.style.opacity = "0";
+            card.style.transform = "translateY(40px) scale(0.9)";
+
+            setTimeout(() => {
+                document.getElementById('success-overlay').style.display = 'flex';
+                setTimeout(() => {
+                    document.body.classList.add('page-exit-active');
+                    setTimeout(() => window.location.replace("home.html"), 400);
+                }, 1200);
+            }, 300);
+        }
+
+        function showShakeError() {
+            const card = document.getElementById('loginCard');
+            card.style.animation = 'shake 0.4s ease-in-out';
+            setTimeout(() => card.style.animation = '', 400);
+        }
+
+        // ==========================================
+        // ON WINDOW LOAD
+        // ==========================================
+        window.addEventListener('load', () => {
+            if (!localStorage.getItem(Keys.SESSION)) {
+                AssetManager.init(); 
+                SystemSync.init();
+                updateGreetingUI();
+
+                setTimeout(() => {
+                    const splash = document.getElementById('app-splash');
+                    splash.classList.add('splash-exit');
+                    setTimeout(() => { 
+                        splash.style.display = 'none'; 
+                        document.getElementById('loginCard').classList.add('visible'); 
+                    }, 600);
+                }, 2200);
+
+                if ('serviceWorker' in navigator) { 
+                    navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW Setup Pending')); 
+                }
+            }
+        });
+    </script>
+    <script src="ea.js"></script>
+</body>
+</html>

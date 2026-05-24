@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EA Player | Premium Audio</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffd700" id="meta-theme-color">
+    
+    <link rel="stylesheet" href="transition.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Noto+Sans+Ethiopic:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. SYSTEM VARIABLES & 3D THEMES
+           ========================================= */
+        :root {
+            /* Default Gold */
+            --primary: #ffd700;           
+            --primary-dark: #b8860b;
+            --primary-glow: rgba(255, 215, 0, 0.4);
+            
+            /* 3D Colors */
+            --bg: #f0f3f6;
+            --surface: #f0f3f6;
+            --text-main: #1a1a1a;
+            --text-sub: #636e72;
+            --border: rgba(0,0,0,0.02);
+            --shadow-light: #ffffff;
+            --shadow-dark: #d1d9e6;
+            --glass: rgba(240, 243, 246, 0.85);
+            
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* Dark Mode Override */
+        body.dark-mode {
+            --bg: #1e1e24; --surface: #1e1e24; --text-main: #e0e0e0; --text-sub: #888888;
+            --shadow-light: #2c2c36; --shadow-dark: #101012; --glass: rgba(30, 30, 36, 0.9);
+            --border: rgba(255,255,255,0.05);
+        }
+
+        /* Multi-Color Themes (Added Feature) */
+        body.theme-blue { --primary: #0984e3; --primary-dark: #005f9e; --primary-glow: rgba(9, 132, 227, 0.4); }
+        body.theme-green { --primary: #00b894; --primary-dark: #007a62; --primary-glow: rgba(0, 184, 148, 0.4); }
+        body.theme-rose { --primary: #d63031; --primary-dark: #961d1d; --primary-glow: rgba(214, 48, 49, 0.4); }
+
+        /* Sabbath Mode */
+        body.sabbath-mode { --primary: #6c5ce7; --primary-dark: #4834d4; --primary-glow: rgba(108, 92, 231, 0.4); }
+
+        /* STRICT NON-MARKING (No Copy/Selection) */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE10+/Edge */
+            user-select: none;         /* Standard */
+        }
+
+        body {
+            font-family: 'Rajdhani', 'Noto Sans Ethiopic', sans-serif;
+            background: var(--bg); color: var(--text-main);
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* --- Header --- */
+        .player-header {
+            padding: calc(10px + var(--safe-top)) 20px 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 100; border-bottom: 1px solid var(--border);
+        }
+
+        .header-actions { display: flex; gap: 12px; }
+
+        .header-btn {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: var(--surface); border: none;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main); font-size: 16px; cursor: pointer;
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header-btn:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            transform: scale(0.95);
+        }
+
+        .now-playing-info { text-align: center; }
+        .np-label { font-size: 10px; color: var(--primary-dark); letter-spacing: 1px; text-transform: uppercase; font-weight: 900; }
+        .np-album { font-size: 12px; color: var(--text-sub); margin-top: 2px; font-weight: 700; }
+
+        /* --- Lyrics Area (Auto-Scrollable) --- */
+        #lyrics-area {
+            flex: 1; overflow-y: auto; overflow-x: hidden;
+            padding: 20px 20px 140px; /* Space for floating controls */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .lyrics-content {
+            max-width: 600px; margin: 0 auto; text-align: left;
+            line-height: 2.2; font-size: 18px; transition: font-size 0.2s ease;
+        }
+
+        .verse-block { margin-bottom: 25px; padding-left: 10px; font-weight: 600; }
+        .verse-num { color: var(--primary-dark); font-weight: 900; font-size: 0.85em; margin-bottom: 5px; display: block; }
+        .chorus-block {
+            background: var(--surface); border-left: 4px solid var(--primary);
+            padding: 15px; border-radius: 12px; margin: 25px 0 25px 10px; font-weight: 700;
+            box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light);
+        }
+
+        /* --- Compact & Floating 3D Controls --- */
+        .player-controls-wrapper {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            padding: 10px 15px calc(15px + var(--safe-bottom));
+            background: linear-gradient(to top, var(--bg) 80%, transparent);
+            z-index: 200; pointer-events: none; /* Let clicks pass through empty space */
+        }
+
+        .player-controls {
+            background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            padding: 15px 20px; border-radius: 25px; pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 2px 5px rgba(255,255,255,0.2), 0 0 0 1px var(--border);
+            max-width: 500px; margin: 0 auto;
+        }
+
+        .track-details { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .td-title { font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        .td-singer { font-size: 12px; color: var(--text-sub); display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+        .progress-container { 
+            width: 100%; height: 6px; border-radius: 10px; position: relative; cursor: pointer; margin-bottom: 8px;
+            background: var(--surface); box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+        }
+        .progress-fill { 
+            height: 100%; background: linear-gradient(90deg, var(--primary-dark), var(--primary)); 
+            border-radius: 10px; width: 0%; position: relative; box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .progress-fill::after { 
+            content: ''; position: absolute; right: -6px; top: -4px; width: 14px; height: 14px; 
+            background: var(--surface); border: 3px solid var(--primary); border-radius: 50%; 
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
+        }
+
+        .time-stamps { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-sub); font-weight: 800; }
+
+        /* Compact Buttons */
+        .control-buttons { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        
+        .btn-action { 
+            width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: none; color: var(--text-main); font-size: 14px; 
+            display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s;
+            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+        }
+        .btn-action:active { box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light); transform: scale(0.95); color: var(--primary); }
+
+        .btn-play-main {
+            width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: #000;
+            display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: 0.3s;
+            box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light), inset 2px 2px 5px rgba(255,255,255,0.4);
+        }
+        .btn-play-main:active { transform: scale(0.95); box-shadow: inset 3px 3px 6px rgba(0,0,0,0.3); }
+        .audio-loader { width: 20px; height: 20px; border: 3px solid #000; border-bottom-color: transparent; border-radius: 50%; display: none; animation: spin 1s linear infinite; }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Auto-Scroll Indicator */
+        .auto-scroll-btn { color: var(--primary); text-shadow: 0 0 8px var(--primary-glow); }
+        .auto-scroll-btn.off { color: var(--text-sub); text-shadow: none; }
+
+        #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: var(--bg); padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; opacity: 0; transition: 0.3s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
+
+    </style>
+</head>
+<body>
+
+    <header class="player-header">
+        <div class="header-btn" onclick="goBack()"><i class="fas fa-chevron-down"></i></div>
+        <div class="now-playing-info">
+            <div class="np-label" id="brand-label">በመጫወት ላይ</div>
+            <div class="np-album" id="queue-status">1 of 1</div>
+        </div>
+        <div class="header-actions">
+            <div class="header-btn" onclick="cycleThemeColor()"><i class="fas fa-palette"></i></div>
+            <div class="header-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></div>
+        </div>
+    </header>
+
+    <div id="lyrics-area">
+        <div class="lyrics-content" id="lyrics-render">
+            <div style="text-align: center; padding-top: 80px; opacity: 0.5;">
+                <i class="fas fa-music fa-spin" style="font-size: 40px; margin-bottom: 20px; color: var(--primary);"></i><br><br>
+                <span style="font-weight: 700;">ግጥም በማውረድ ላይ...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="player-controls-wrapper">
+        <div class="player-controls">
+            <div class="track-details">
+                <div class="td-text" style="width: 75%;">
+                    <div class="td-title" id="track-title">መዝሙር...</div>
+                    <div class="td-singer" id="track-singer"><i class="fas fa-microphone-lines"></i> <span>...</span></div>
+                </div>
+                <div style="display:flex; gap: 10px;">
+                    <i class="fas fa-magic auto-scroll-btn" id="scroll-btn" onclick="toggleAutoScroll()" style="font-size: 18px; padding: 5px;"></i>
+                    <i class="far fa-heart" id="fav-icon" onclick="toggleFav()" style="font-size: 20px; padding: 5px; color: var(--text-sub);"></i>
+                </div>
+            </div>
+
+            <div class="progress-container" id="prog-bar"><div class="progress-fill" id="prog-fill"></div></div>
+            <div class="time-stamps"><span id="curr-time">0:00</span><span id="dur-time">--:--</span></div>
+
+            <div class="control-buttons">
+                <button class="btn-action" onclick="changeSpeed()"><i class="fas fa-tachometer-alt"></i></button>
+                <button class="btn-action" onclick="playPrev()"><i class="fas fa-step-backward"></i></button>
+                <button class="btn-action" onclick="seek(-15)"><i class="fas fa-undo"></i> <span style="font-size:8px; margin-left:2px; font-weight:bold;">15</span></button>
+
+                <div class="btn-play-main" onclick="togglePlay()">
+                    <i class="fas fa-play" id="play-icon"></i>
+                    <div class="audio-loader" id="play-loader"></div>
+                </div>
+
+                <button class="btn-action" onclick="seek(15)"><i class="fas fa-redo"></i> <span style="font-size:8px; margin-left:2px; font-weight:bold;">15</span></button>
+                <button class="btn-action" onclick="playNext()"><i class="fas fa-step-forward"></i></button>
+                <button class="btn-action" onclick="adjustFont()"><i class="fas fa-text-height"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+    <audio id="audio-engine" preload="auto"></audio>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // --- FIREBASE CONFIG ---
+        const firebaseConfig = { databaseURL: "https://ea-youth-union-d22b1-default-rtdb.firebaseio.com" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const audio = document.getElementById('audio-engine');
+        const lyricsContainer = document.getElementById('lyrics-render');
+        const lyricsArea = document.getElementById('lyrics-area');
+        const playIcon = document.getElementById('play-icon');
+        const playLoader = document.getElementById('play-loader');
+        
+        let playlist = [];
+        let currentIndex = 0;
+        let fontSize = 18;
+        let speeds = [1.0, 1.25, 1.5, 2.0];
+        let currentSpeedIdx = 0;
+        let favorites = JSON.parse(localStorage.getItem('ea_favorites')) || [];
+        
+        let isAutoScroll = true;
+        let userInteractedScroll = false;
+        let scrollTimeout;
+
+        // Theme Colors
+        const themes = ['default', 'theme-blue', 'theme-green', 'theme-rose'];
+        let currentThemeIdx = parseInt(localStorage.getItem('ea_color_idx')) || 0;
+
+        window.onload = () => {
+            applyTheme();
+            applyColorTheme();
+            
+            const storedQueue = localStorage.getItem('ea_player_queue');
+            const targetId = localStorage.getItem('ea_current_song_id');
+
+            if (storedQueue) {
+                playlist = JSON.parse(storedQueue);
+                currentIndex = playlist.findIndex(s => s.id === targetId);
+                if(currentIndex === -1) currentIndex = 0;
+            }
+            if(playlist.length > 0) loadTrack(currentIndex);
+            setupPinchZoom();
+
+            // Detect user manual scroll to pause auto-scroll temporarily
+            lyricsArea.addEventListener('touchstart', () => userInteractedScroll = true);
+            lyricsArea.addEventListener('touchend', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => userInteractedScroll = false, 3000); // Resume auto-scroll after 3 sec
+            });
+        };
+
+        // --- TRACK & OFFLINE CACHE (ADVANCED) ---
+        async function cacheAudioOffline(url) {
+            if (!window.caches) return url;
+            try {
+                const cache = await caches.open('ea-audio-cache');
+                const cachedRes = await cache.match(url);
+                if (cachedRes) {
+                    const blob = await cachedRes.blob();
+                    return URL.createObjectURL(blob); // Play from offline cache
+                } else {
+                    // Fetch and store for next time offline use
+                    fetch(url).then(response => {
+                        if(response.ok) cache.put(url, response.clone());
+                    }).catch(()=>console.log("Offline mode"));
+                    return url;
+                }
+            } catch(e) { return url; }
+        }
+
+        async function loadTrack(index) {
+            const track = playlist[index];
+            currentIndex = index;
+            document.getElementById('track-title').innerText = track.title;
+            document.getElementById('track-singer').querySelector('span').innerText = track.singer;
+            document.getElementById('queue-status').innerText = `${index + 1} of ${playlist.length}`;
+            
+            setLoading(true);
+            updateFavIcon(track.id);
+            fetchLyrics(track.id);
+
+            // Load Audio via Offline Cache System
+            const playableUrl = await cacheAudioOffline(track.audioUrl);
+            audio.src = playableUrl;
+            audio.playbackRate = speeds[currentSpeedIdx];
+            playAudio();
+            
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: track.title, artist: track.singer, album: 'EA Youth Union',
+                    artwork: [{ src: track.image || 'logo.png', sizes: '512x512', type: 'image/png' }]
+                });
+                navigator.mediaSession.setActionHandler('play', playAudio);
+                navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+                navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+                navigator.mediaSession.setActionHandler('nexttrack', playNext);
+            }
+        }
+
+        function fetchLyrics(id) {
+            const cached = localStorage.getItem('cache_' + id);
+            if(cached) { renderLyrics(JSON.parse(cached).lyrics); return; }
+
+            db.ref(`Mezmurs/${id}`).once('value').then(snap => {
+                const val = snap.val();
+                if(val) {
+                    localStorage.setItem('cache_'+id, JSON.stringify(val));
+                    renderLyrics(val.lyrics);
+                }
+            });
+        }
+
+        function renderLyrics(text) {
+            if(!text) { lyricsContainer.innerHTML = '<p style="text-align:center; opacity:0.5; font-weight:700;">ግጥም አልተገኘም</p>'; return; }
+            const parts = text.split(/\n\s*\n/);
+            lyricsContainer.innerHTML = parts.map(part => {
+                let clean = part.trim();
+                if(clean.match(/\[(አዝ|Chorus)\]/i) || clean.startsWith('አዝ')) {
+                    return `<div class="chorus-block">${clean.replace(/\[.*?\]/g,'').replace(/^አዝ/,'').replace(/\n/g,'<br>')}</div>`;
+                } else {
+                    const vMatch = clean.match(/^\[?(\d+)\]?\.?/);
+                    return `<div class="verse-block">${vMatch ? `<span class="verse-num">ቁጥር ${vMatch[1]}</span>` : ''}${clean.replace(/^\[?\d+\]?\.?/,'').replace(/\n/g,'<br>')}</div>`;
+                }
+            }).join('');
+            lyricsArea.scrollTop = 0;
+        }
+
+        // --- AUDIO ENGINE & AUTO-SCROLL ---
+        function togglePlay() { audio.paused ? playAudio() : audio.pause(); }
+        function playAudio() { audio.play().then(() => { playIcon.className = 'fas fa-pause'; setLoading(false); }).catch(() => setLoading(false)); }
+        
+        audio.onpause = () => playIcon.className = 'fas fa-play';
+        audio.onwaiting = () => setLoading(true);
+        audio.onplaying = () => setLoading(false);
+        audio.onended = () => playNext();
+
+        function playNext() { if(currentIndex < playlist.length - 1) loadTrack(currentIndex+1); else loadTrack(0); }
+        function playPrev() { audio.currentTime > 5 ? audio.currentTime = 0 : (currentIndex > 0 ? loadTrack(currentIndex-1) : loadTrack(playlist.length-1)); }
+        function seek(amount) { audio.currentTime += amount; }
+        
+        function changeSpeed() {
+            currentSpeedIdx = (currentSpeedIdx + 1) % speeds.length;
+            audio.playbackRate = speeds[currentSpeedIdx];
+            showToast("ፍጥነት: " + speeds[currentSpeedIdx] + "x");
+        }
+
+        audio.ontimeupdate = () => {
+            if(!audio.duration) return;
+            const pct = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('prog-fill').style.width = pct + '%';
+            document.getElementById('curr-time').innerText = formatTime(audio.currentTime);
+            document.getElementById('dur-time').innerText = formatTime(audio.duration);
+
+            // AUTO-SCROLL LOGIC
+            if(isAutoScroll && !userInteractedScroll) {
+                const scrollHeight = lyricsContainer.scrollHeight - lyricsArea.clientHeight;
+                if(scrollHeight > 0) {
+                    lyricsArea.scrollTop = (audio.currentTime / audio.duration) * scrollHeight;
+                }
+            }
+        };
+
+        document.getElementById('prog-bar').onclick = (e) => {
+            audio.currentTime = (e.offsetX / e.currentTarget.clientWidth) * audio.duration;
+        };
+
+        function formatTime(sec) {
+            if(isNaN(sec)) return "0:00";
+            let m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+            return `${m}:${s < 10 ? '0'+s : s}`;
+        }
+
+        function setLoading(l) {
+            playIcon.style.display = l ? 'none' : 'block';
+            playLoader.style.display = l ? 'block' : 'none';
+        }
+
+        function toggleAutoScroll() {
+            isAutoScroll = !isAutoScroll;
+            const btn = document.getElementById('scroll-btn');
+            btn.className = isAutoScroll ? 'fas fa-magic auto-scroll-btn' : 'fas fa-magic auto-scroll-btn off';
+            showToast(isAutoScroll ? "Auto-Scroll: ON" : "Auto-Scroll: OFF");
+        }
+
+        // --- UTILS & THEMES ---
+        function cycleThemeColor() {
+            document.body.classList.remove(themes[currentThemeIdx]);
+            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+            if(themes[currentThemeIdx] !== 'default') {
+                document.body.classList.add(themes[currentThemeIdx]);
+            }
+            localStorage.setItem('ea_color_idx', currentThemeIdx);
+            
+            // Update Meta Theme Color
+            const rootStyles = getComputedStyle(document.body);
+            document.getElementById('meta-theme-color').content = rootStyles.getPropertyValue('--primary').trim();
+            showToast("የከለር ምርጫ ተቀይሯል");
+        }
+
+        function applyColorTheme() {
+            if(themes[currentThemeIdx] !== 'default') {
+                document.body.classList.add(themes[currentThemeIdx]);
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isD = document.body.classList.contains('dark-mode');
+            document.getElementById('theme-icon').className = isD ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('ea_theme', isD ? 'dark' : 'light');
+        }
+
+        function applyTheme() {
+            if(localStorage.getItem('ea_theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').className = 'fas fa-sun';
+            }
+        }
+
+        function goBack() { 
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(20px)';
+            setTimeout(() => history.back(), 300);
+        }
+
+        function adjustFont() { 
+            fontSize = fontSize >= 30 ? 16 : fontSize + 2; 
+            lyricsContainer.style.fontSize = fontSize + 'px';
+            showToast("የጽሁፍ መጠን: " + fontSize + "px");
+        }
+
+        function toggleFav() {
+            const id = playlist[currentIndex].id;
+            if(favorites.includes(id)) {
+                favorites = favorites.filter(f => f !== id);
+                showToast("ከተመረጡት ውስጥ ወጥቷል");
+            } else {
+                favorites.push(id);
+                showToast("ተወዳጅ ውስጥ ተጨምሯል ❤️");
+            }
+            localStorage.setItem('ea_favorites', JSON.stringify(favorites));
+            updateFavIcon(id);
+        }
+
+        function updateFavIcon(id) {
+            const icon = document.getElementById('fav-icon');
+            const isF = favorites.includes(id);
+            icon.className = isF ? 'fas fa-heart' : 'far fa-heart';
+            icon.style.color = isF ? '#ff4757' : 'var(--text-sub)';
+        }
+
+        function showToast(m) {
+            const t = document.getElementById('toast');
+            t.innerText = m; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function setupPinchZoom() {
+            let dist = 0;
+            lyricsArea.ontouchstart = (e) => { if(e.touches.length === 2) dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); };
+            lyricsArea.ontouchmove = (e) => {
+                if(e.touches.length === 2) {
+                    let d = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                    if(Math.abs(d - dist) > 15) {
+                        fontSize = d > dist ? Math.min(fontSize + 0.5, 40) : Math.max(fontSize - 0.5, 12);
+                        lyricsContainer.style.fontSize = fontSize + 'px';
+                        dist = d;
+                    }
+                }
+            };
+        }
+    </script>
+</body>
+</html>

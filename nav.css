@@ -1,0 +1,139 @@
+/**
+ * ============================================================================
+ * EA ULTRA-PREMIUM NAVIGATION V3.0 (STABLE)
+ * Optimized for: Zero-Lag, Hardware Acceleration, and Native Feel.
+ * ============================================================================
+ */
+
+:root {
+    --nav-height: 72px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    
+    /* Light Theme (Default) */
+    --nav-bg: rgba(255, 255, 255, 0.85);
+    --nav-border: rgba(0, 0, 0, 0.08);
+    --nav-text: #8e8e93;
+    --nav-active: #b8860b;
+    --nav-home-bg: linear-gradient(135deg, #ffd700, #d4af37);
+    --body-bg: #f4f6f8;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+    --nav-bg: rgba(18, 18, 20, 0.85);
+    --nav-border: rgba(255, 255, 255, 0.05);
+    --nav-text: #636366;
+    --nav-active: #ffd700;
+    --body-bg: #050505;
+}
+
+/* Sabbath Mode Overrides */
+body.sabbath-mode {
+    --nav-active: #00f3ff;
+    --nav-home-bg: linear-gradient(135deg, #00f3ff, #008eb3);
+}
+
+/* 1. Reset Body to Prevent Jumping */
+body {
+    margin: 0;
+    padding-bottom: calc(var(--nav-height) + var(--safe-bottom));
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none; /* Rubber-banding ያስቀራል */
+}
+
+/* 2. Main Navigation Container */
+.ea-premium-nav, .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; width: 100%;
+    height: calc(var(--nav-height) + var(--safe-bottom));
+    background: var(--nav-bg);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px var(--safe-bottom) 8px;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-top: 0.5px solid var(--nav-border);
+    z-index: 999999;
+    box-sizing: border-box;
+    
+    /* Hardware Acceleration: መቆራረጥን ይከላከላል */
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* 3. Navigation Items */
+.ea-nav-item, .nav-item {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    color: var(--nav-text);
+    position: relative;
+    
+    /* ገጽ ሲቀየር አኒሜሽን እንዳይዘገይ (Zero Transition for instant feel) */
+    transition: none; 
+}
+
+.ea-nav-item i, .nav-item i {
+    font-size: 22px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.ea-nav-item span, .nav-item span {
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Noto Sans Ethiopic', sans-serif;
+    letter-spacing: -0.2px;
+}
+
+/* 4. Active State (Instant Highlight) */
+.ea-nav-item.active, .nav-item.active {
+    color: var(--nav-active);
+}
+
+/* 5. Floating Home Button (The "Native" Look) */
+.ea-nav-home, .nav-item.home-main {
+    position: relative;
+    top: -20px; /* Floating effect */
+    background: var(--nav-home-bg);
+    width: 60px;
+    height: 60px;
+    flex: none !important;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000 !important;
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+    border: 5px solid var(--body-bg);
+    
+    /* Hardware Acceleration */
+    transform: translateZ(0);
+}
+
+body.sabbath-mode .ea-nav-home, 
+body.sabbath-mode .nav-item.home-main {
+    box-shadow: 0 10px 25px rgba(0, 243, 255, 0.3);
+}
+
+.ea-nav-home i, .nav-item.home-main i {
+    font-size: 24px;
+    margin: 0;
+}
+
+/* 6. Fix for iOS Home Indicator */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .ea-premium-nav, .bottom-nav {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* 7. Optimization: Hide elements during page transition to prevent flicker */
+.page-loading .ea-premium-nav {
+    display: none;
+}

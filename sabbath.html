@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>EA Sabbath School | Ultra Pro Edition</title>
+    
+    <script>
+        // Instant Theme Load to prevent flashing
+        (function() {
+            const savedTheme = localStorage.getItem('ea_theme') || 'dark';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="nav.css"> 
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Noto+Sans+Ethiopic:wght@300;400;600;700;900&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #ffd700;
+            --primary-dark: #b8860b;
+            --primary-glow: rgba(255, 215, 0, 0.4);
+            --danger: #ff4757;
+            --success: #2ed573;
+            --info: #1e90ff;
+            
+            --bg: #f4f6f8;
+            --surface: #ffffff;
+            --surface-mid: #f0f2f5;
+            --text-main: #1a1a1a;
+            --text-sub: #636e72;
+            --border: rgba(0,0,0,0.08);
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            
+            --shadow-soft: 0 8px 30px rgba(0,0,0,0.05);
+            --shadow-3d: 0 15px 35px -5px rgba(0,0,0,0.1), 0 10px 15px -5px rgba(0,0,0,0.05);
+            --shadow-inset: inset 0 2px 5px rgba(255, 255, 255, 0.8), inset 0 -3px 5px rgba(0, 0, 0, 0.05);
+            --btn-3d: 0 6px 0 var(--primary-dark), 0 15px 20px rgba(0,0,0,0.2);
+            --btn-3d-active: 0 2px 0 var(--primary-dark), 0 5px 10px rgba(0,0,0,0.2);
+            
+            --radius-lg: 28px;
+            --radius-md: 16px;
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --nav-height: 80px;
+        }
+
+        html.dark-mode, body.dark-mode {
+            --bg: #000000;
+            --surface: #111111;
+            --surface-mid: #1c1c1e;
+            --text-main: #f5f5f7;
+            --text-sub: #a1a1a6;
+            --border: rgba(255,255,255,0.1);
+            --glass: rgba(28, 28, 30, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --shadow-soft: 0 8px 30px rgba(0,0,0,0.4);
+            --shadow-3d: 0 15px 35px -5px rgba(0,0,0,0.8), 0 10px 15px -5px rgba(0,0,0,0.6);
+            --shadow-inset: inset 0 2px 5px rgba(255, 255, 255, 0.05), inset 0 -3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        body.sabbath-mode {
+            --primary: #00f3ff;
+            --primary-dark: #008eb3;
+            --primary-glow: rgba(0, 243, 255, 0.4);
+            --btn-3d: 0 6px 0 var(--primary-dark), 0 15px 20px rgba(0,0,0,0.2);
+            --btn-3d-active: 0 2px 0 var(--primary-dark), 0 5px 10px rgba(0,0,0,0.2);
+        }
+        
+        body.sabbath-mode::before {
+            content: "HAPPY SABBATH - መልካም ሰንበት";
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: linear-gradient(90deg, #00f3ff, #0066ff);
+            color: #000; font-weight: 900; font-size: 10px;
+            text-align: center; z-index: 2000; letter-spacing: 2px;
+            padding: calc(var(--safe-top) + 2px) 0 2px;
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        ::-moz-selection { background: var(--primary-glow); color: var(--text-main); }
+        ::selection { background: var(--primary-glow); color: var(--text-main); }
+        
+        html, body { width: 100%; height: 100vh; overflow: hidden; background: var(--bg); transition: background 0.4s ease; font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; color: var(--text-main); user-select: none; -webkit-user-select: none; overscroll-behavior-y: none; }
+
+        /* የተሻሻለ የ Highlighting ስታይል - እንደ Bible Mode አድርጎ የሚያሳይ */
+        mark.ea-highlight, .text-content span[style*="background-color"] { 
+            border-radius: 4px; 
+            padding: 2px 0; 
+            display: inline; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            transition: background 0.3s; 
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+            color: inherit !important;
+        }
+
+        .stage { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .stage.active { opacity: 1; pointer-events: auto; z-index: 10; }
+        .scrollable-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px); }
+        .scrollable-content::-webkit-scrollbar { display: none; }
+
+        .top-toolbar { padding: calc(var(--safe-top) + 10px) 20px 15px; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid var(--border); position: relative; z-index: 100; flex-shrink: 0; }
+        .brand-title { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+        
+        .toolbar-actions { display: flex; gap: 12px; align-items: center; }
+        .icon-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-main); font-size: 18px; box-shadow: var(--shadow-soft); cursor: pointer; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .icon-btn:active { transform: scale(0.9); }
+
+        .lang-selector { position: relative; }
+        .lang-btn { background: var(--surface); padding: 0 15px; height: 44px; border-radius: 22px; border: 1px solid var(--border); font-size: 13px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: var(--shadow-soft); transition: 0.2s; }
+        .lang-btn:active { transform: scale(0.95); }
+        .lang-dropdown { position: absolute; top: 115%; right: 0; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 18px; box-shadow: var(--shadow-3d); padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200; width: 150px; transform-origin: top right; }
+        .lang-dropdown.show { display: flex; animation: dropScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes dropScaleIn { from { opacity: 0; transform: scale(0.8) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        .lang-opt { padding: 12px 15px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; color: var(--text-sub); }
+        .lang-opt:hover, .lang-opt.active { background: var(--primary-glow); color: var(--text-main); }
+        .lang-opt.active::after { content: '\f00c'; font-family: 'FontAwesome'; font-size: 12px; color: var(--primary); }
+
+        .category-tabs { display: flex; background: var(--surface-mid); border-radius: 30px; padding: 6px; margin: 20px 20px; box-shadow: var(--shadow-inset); position: relative; z-index: 2; }
+        .tab-btn { flex: 1; text-align: center; padding: 12px 0; border-radius: 25px; font-size: 14px; font-weight: 800; color: var(--text-sub); transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; }
+        .tab-btn.active { background: var(--surface); color: var(--text-main); box-shadow: 0 4px 15px rgba(0,0,0,0.1); transform: scale(1.02); }
+
+        .main-book-display { display: flex; justify-content: center; padding: 20px 0 30px; perspective: 1500px; z-index: 2; }
+        .book-wrapper { position: relative; width: 210px; height: 290px; transform-style: preserve-3d; transform: rotateY(-18deg) rotateX(8deg); transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; animation: floatBook 6s ease-in-out infinite alternate; }
+        @keyframes floatBook { 0% { transform: rotateY(-18deg) rotateX(8deg) translateY(0); } 100% { transform: rotateY(-12deg) rotateX(4deg) translateY(-15px); } }
+        .book-wrapper:active { transform: rotateY(-15deg) scale(0.92); transition: 0.2s; }
+        
+        .book-container { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; box-shadow: inset 4px 0 10px rgba(0,0,0,0.1), 25px 35px 45px rgba(0,0,0,0.4), 0 0 40px var(--primary-glow); border-radius: 6px 18px 18px 6px; }
+        .book-pages { position: absolute; right: -15px; top: 5px; bottom: 5px; width: 15px; background: linear-gradient(to right, #e0e0e0, #ffffff, #dcdcdc); transform: rotateY(90deg); transform-origin: left; border-radius: 0 4px 4px 0; background-image: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0,0,0,0.08) 3px); }
+        .book-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 45px; background: linear-gradient(to right, #050505, #1a1a1a, #050505); transform: translateX(-45px) rotateY(-90deg); transform-origin: right; border-radius: 8px 0 0 8px; box-shadow: inset 2px 0 8px rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; }
+        .book-spine span { writing-mode: vertical-rl; text-orientation: mixed; color: #fff; font-size: 11px; font-weight: 900; letter-spacing: 3px; opacity: 0.6; }
+        .book-front { position: absolute; inset: 0; background: #111; border-radius: 6px 18px 18px 6px; overflow: hidden; background-size: cover; background-position: center; border-left: 2px solid rgba(255,255,255,0.4); z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; }
+        
+        .book-cover-overlay { background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 60%); width: 100%; padding: 20px 15px; }
+        .book-cover-title { color: #fff; font-size: 18px; font-weight: 900; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .book-cover-date { color: var(--primary); font-size: 12px; font-weight: 800; margin-top: 6px; letter-spacing: 0.5px; }
+
+        .btn-massive-play { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; padding: 20px; border-radius: 22px; width: calc(100% - 40px); margin: 0 20px 30px; font-weight: 900; color: #000; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: var(--btn-3d); cursor: pointer; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2; position: relative; }
+        .btn-massive-play:active { transform: translateY(4px); box-shadow: var(--btn-3d-active); }
+        
+        .shelf-section { padding: 10px 20px 30px; position: relative; z-index: 1; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .section-header h2 { font-size: 20px; font-weight: 900; }
+        
+        .bookshelf-row { display: flex; gap: 18px; overflow-x: auto; padding: 10px 10px 40px 10px; scrollbar-width: none; perspective: 1000px; }
+        .bookshelf-row::-webkit-scrollbar { display: none; }
+        .history-book { width: 110px; height: 160px; flex-shrink: 0; position: relative; z-index: 1; border-radius: 4px 14px 14px 4px; box-shadow: -8px 12px 20px rgba(0,0,0,0.3); background-size: cover; background-position: center; border-left: 3px solid rgba(255,255,255,0.4); cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+        .history-book:hover { transform: translateY(-10px) rotateY(-5deg); box-shadow: -12px 20px 25px rgba(0,0,0,0.5); }
+
+        .list-header { padding: calc(var(--safe-top) + 15px) 20px 15px; background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border); position: relative; z-index: 100; flex-shrink: 0; }
+        .back-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); font-size: 18px; cursor: pointer; box-shadow: var(--shadow-soft); transition: 0.2s; color: var(--text-main); }
+        .back-btn:active { transform: scale(0.9); }
+        
+        .lessons-grid { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .chapter-card { background: var(--surface); border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 18px; box-shadow: var(--shadow-soft); border: 1px solid var(--border); cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+        .chapter-card:active { transform: scale(0.96); }
+        .chap-num { width: 54px; height: 54px; border-radius: 16px; background: var(--surface-mid); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; border: 1px solid var(--border); }
+        .chap-info { flex: 1; }
+        .chap-title { font-size: 16px; font-weight: 800; margin-bottom: 6px; line-height: 1.3; }
+        .chap-date { font-size: 12px; color: var(--text-sub); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+        #stage-reader { background: var(--bg); }
+        .reader-scroller { flex: 1; overflow-y: auto; padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 50px); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .reader-scroller::-webkit-scrollbar { display: none; }
+        
+        .reader-nav { position: absolute; top: calc(var(--safe-top) + 10px); left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 200; pointer-events: none; }
+        .reader-nav > * { pointer-events: auto; }
+        .reader-btn-blur { width: 46px; height: 46px; border-radius: 50%; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center; color: #fff; border: 1px solid rgba(255,255,255,0.2); font-size: 20px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.4); transition: 0.2s; }
+        
+        .parallax-hero { height: 380px; width: 100%; position: relative; background-size: cover; background-position: center; display: flex; align-items: flex-end; }
+        .parallax-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.8) 100%); }
+        .hero-content { position: relative; z-index: 10; padding: 0 25px 30px; width: 100%; }
+        
+        .day-tag { background: var(--primary); color: #000; padding: 6px 16px; border-radius: 12px; font-size: 13px; font-weight: 900; text-transform: uppercase; display: inline-block; box-shadow: 0 4px 15px var(--primary-glow); margin-bottom: 12px; }
+        .reader-title { font-size: 30px; font-weight: 900; color: #fff; line-height: 1.3; text-shadow: 0 4px 15px rgba(0,0,0,0.9); margin-bottom: 10px; }
+        .reader-date { color: var(--primary); font-size: 14.5px; font-weight: 800; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 8px; font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; }
+
+        .days-nav-wrapper { width: 100%; margin-top: 10px; }
+        .days-nav { display: flex; overflow-x: auto; gap: 10px; scrollbar-width: none; scroll-behavior: smooth; padding-bottom: 10px; }
+        .days-nav::-webkit-scrollbar { display: none; }
+        .day-pill { padding: 10px 20px; border-radius: 18px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .day-pill.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 8px 20px var(--primary-glow); transform: translateY(-2px); font-weight: 900; }
+
+        .article-body { padding: 35px 25px 80px; position: relative; user-select: text; -webkit-user-select: text; min-height: 60vh; background: var(--bg); z-index: 20; }
+        .text-content { font-family: 'Merriweather', 'Noto Sans Ethiopic', serif; line-height: 2.3; font-size: 18px; color: var(--text-main); text-align: justify; transition: font-size 0.2s ease; }
+        .text-content p { margin-bottom: 25px; }
+        .text-content h3 { font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; font-size: 22px; font-weight: 800; margin: 35px 0 15px; color: var(--text-main); }
+
+        .admin-intro-note { background: var(--surface); border-left: 5px solid var(--primary); padding: 25px 25px 25px 35px; border-radius: 0 20px 20px 0; margin: 15px 0 35px 0; position: relative; box-shadow: var(--shadow-soft); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; }
+        .admin-intro-note .quote-icon { position: absolute; top: -5px; left: -10px; font-size: 60px; opacity: 0.05; color: var(--text-main); transform: rotate(-10deg); }
+        .admin-intro-note .intro-content { font-style: italic; font-weight: 600; font-size: 1.05em; line-height: 1.9; color: var(--text-main); position: relative; z-index: 2; }
+
+        .bible-link, .custom-p-link { color: inherit; text-decoration: underline; text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 700; cursor: pointer; transition: 0.2s; background: transparent; padding: 0; display: inline; border-radius: 0; }
+        .custom-p-link { color: var(--primary-dark); }
+        
+        .discussion-box { background: var(--surface-mid); border-radius: 16px; padding: 25px 20px; margin: 30px 0; border-left: 5px solid var(--primary); box-shadow: var(--shadow-soft); }
+        .discussion-box .q-text { font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; font-weight: 800; font-size: 17px; margin-bottom: 25px; color: var(--text-main); line-height: 1.6; }
+        .discussion-textarea { width: 100%; min-height: 100px; background: rgba(0,0,0,0.03); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; font-size: 16px; resize: vertical; padding: 15px; line-height: 1.8; outline: none; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); }
+        .discussion-textarea:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-glow); }
+        html.dark-mode .discussion-textarea { background: rgba(255,255,255,0.03); }
+        html.dark-mode .discussion-textarea:focus { background: var(--surface); }
+
+        .intro-card { background: var(--surface); border-radius: 20px; padding: 20px; margin: 20px 20px 0 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--border); position: relative; overflow: hidden; }
+        .intro-card h3 { margin-bottom: 10px; font-size: 18px; font-weight: 800; color: var(--primary-dark); }
+        .intro-card p { font-size: 14.5px; color: var(--text-sub); line-height: 1.8; }
+        .read-more-btn { color: var(--primary-dark); background: var(--primary-glow); padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; display: inline-block; margin-top: 15px; transition: 0.2s; }
+        
+        .bible-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 100000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bible-modal.show { opacity: 1; pointer-events: auto; }
+        
+        /* የተሻሻለ የመጽሐፍ ቅዱስ ፖፕ አፕ (Scrollable እንዲሆን) */
+        .bible-modal-content { 
+            background: var(--surface); width: 88%; max-width: 420px; border-radius: 28px; padding: 25px; box-shadow: var(--shadow-3d); transform: translateY(30px) scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid var(--border); position: relative; overflow: hidden; 
+            max-height: 85vh; /* እንዳያልፍ ተገድቧል */
+            display: flex; 
+            flex-direction: column;
+        }
+        .bible-modal.show .bible-modal-content { transform: translateY(0) scale(1); }
+        .bible-modal-content::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); }
+        .bible-title { font-size: 20px; font-weight: 900; color: var(--text-main); margin-bottom: 15px; display:flex; justify-content:space-between; align-items:center; font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; flex-shrink: 0; }
+        .bible-title span { display: flex; align-items: center; gap: 10px; color: var(--primary-dark); }
+        .bible-text { 
+            font-size: 17px; line-height: 2; color: var(--text-main); font-family: 'Merriweather', 'Noto Sans Ethiopic', serif; font-weight: 500; 
+            overflow-y: auto; /* Scroll ያደርጋል */
+            padding-right: 5px;
+            flex: 1;
+        }
+        .bible-text::-webkit-scrollbar { width: 4px; }
+        .bible-text::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        .close-bible { background: var(--surface-mid); width: 36px; height: 36px; border-radius: 50%; display:flex; justify-content:center; align-items:center; cursor:pointer; color: var(--text-sub); transition: 0.2s; }
+
+        #highlighter-toolbar { position: fixed; display: none; background: rgba(30, 30, 32, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 10px 15px; border-radius: 20px; z-index: 9999; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: translate(-50%, -100%); align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.1); animation: popTool 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #highlighter-toolbar::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0; border-style: solid; border-color: rgba(30, 30, 32, 0.95) transparent transparent transparent; }
+        @keyframes popTool { from { opacity:0; transform: translate(-50%, -80%) scale(0.8); } to { opacity:1; transform: translate(-50%, -100%) scale(1); } }
+        
+        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; box-shadow: inset 0 2px 5px rgba(255,255,255,0.3), 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; border: 2px solid transparent; }
+        .btn-clear-mark { color: #ff4757; background: rgba(255,71,87,0.15); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+
+        .toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: var(--bg); padding: 14px 28px; border-radius: 30px; font-size: 14px; font-weight: 800; z-index: 10001; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: top 0.4s cubic-bezier(0.19, 1, 0.22, 1); display: flex; align-items: center; gap: 12px; }
+        .toast.show { top: calc(var(--safe-top) + 20px); }
+    </style>
+</head>
+<body>
+
+    <div id="app-toast" class="toast"><i class="fas fa-info-circle"></i> <span id="toast-msg">መልዕክት</span></div>
+
+    <div class="bible-modal" id="bible-modal">
+        <div class="bible-modal-content">
+            <div class="bible-title">
+                <span id="bible-popup-title"><i class="fas fa-bible"></i> መጽሐፍ ቅዱስ</span>
+                <div class="close-bible" onclick="closeBiblePopup()"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="bible-text" id="bible-popup-text">እየጫነ ነው...</div>
+        </div>
+    </div>
+
+    <div class="bible-modal" id="info-modal">
+        <div class="bible-modal-content">
+            <div class="bible-title">
+                <span id="info-popup-title"><i class="fas fa-info-circle"></i> መረጃ</span>
+                <div class="close-bible" onclick="closeInfoModal()"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="bible-text" id="info-popup-text">እየጫነ ነው...</div>
+        </div>
+    </div>
+
+    <div id="highlighter-toolbar">
+        <div class="color-opt" style="background: #ffd700;" onclick="Highlighter.apply('#ffd70066')"></div>
+        <div class="color-opt" style="background: #ff4757;" onclick="Highlighter.apply('#ff475766')"></div>
+        <div class="color-opt" style="background: #2ecc71;" onclick="Highlighter.apply('#2ecc7166')"></div>
+        <div class="color-opt" style="background: #3498db;" onclick="Highlighter.apply('#3498db66')"></div>
+        <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 4px;"></div>
+        <div class="btn-clear-mark" onclick="Highlighter.apply('transparent')"><i class="fas fa-eraser"></i></div>
+    </div>
+
+    <section id="stage-library" class="stage active">
+        <div class="top-toolbar">
+            <div class="brand-title" id="ui-main-title"><i class="fas fa-bible"></i> የሰንበት ትምህርት</div>
+            <div class="toolbar-actions">
+                <div class="lang-selector">
+                    <div class="lang-btn" onclick="toggleLangDropdown()">
+                        <i class="fas fa-language" style="font-size: 18px;"></i> <span id="current-lang-txt">አማርኛ</span>
+                    </div>
+                    <div class="lang-dropdown" id="lang-menu">
+                        <div class="lang-opt active" onclick="changeLanguage('am')">አማርኛ</div>
+                        <div class="lang-opt" onclick="changeLanguage('or')">Afaan Oromoo</div>
+                        <div class="lang-opt" onclick="changeLanguage('en')">English</div>
+                    </div>
+                </div>
+                <div class="icon-btn" onclick="toggleAppTheme()"><i id="theme-icon" class="fas fa-moon"></i></div>
+            </div>
+        </div>
+
+        <div class="scrollable-content">
+            <div class="category-tabs">
+                <div class="tab-btn active" id="ui-tab-adult" onclick="switchCategory('adult')">ጎልማሶች</div>
+                <div class="tab-btn" id="ui-tab-youth" onclick="switchCategory('youth')">ወጣቶች</div>
+                <div class="tab-btn" id="ui-tab-children" onclick="switchCategory('children')">ህፃናት</div>
+            </div>
+
+            <div class="main-book-display">
+                <div class="book-wrapper" onclick="AppEngine.openQuarterly('current')">
+                    <div class="book-container">
+                        <div class="book-pages"></div>
+                        <div class="book-spine"><span id="spine-text">Q1 2026</span></div>
+                        <div class="book-front" id="main-cover" style="background-image: url('logo.png');">
+                            <div class="book-cover-overlay">
+                                <div class="book-cover-title" id="main-book-title">የሩብ ዓመት ሰንበት ትምህርት</div>
+                                <div class="book-cover-date" id="main-book-date">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-massive-play" id="ui-btn-read" onclick="AppEngine.openQuarterly('current')">
+                <i class="fas fa-book-reader"></i> የአሁኑን ሰንበት ትምህርት ክፈት
+            </button>
+
+            <div class="shelf-section">
+                <div class="section-header">
+                    <h2 id="lbl-history">ያለፉ ሰንበት ትምህርቶች (History)</h2>
+                </div>
+                <div class="bookshelf-row" id="history-bookshelf"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stage-list" class="stage">
+        <div class="list-header">
+            <button class="back-btn" onclick="AppEngine.goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div style="display:flex; flex-direction:column;">
+                <h2 id="list-header-title" style="font-size:20px; font-weight:900; margin:0; line-height:1;">የትምህርት ዝርዝር</h2>
+                <span id="list-header-sub" style="font-size:12px; color:var(--text-sub); font-weight:700;">EA youth union </span>
+            </div>
+        </div>
+        
+        <div class="scrollable-content">
+            <div id="quarterly-intro-container"></div>
+            <div class="lessons-grid" id="lesson-grid-render"></div>
+        </div>
+    </section>
+
+    <section id="stage-reader" class="stage">
+        <div class="reader-nav">
+            <button class="reader-btn-blur" onclick="AppEngine.closeReader()"><i class="fas fa-arrow-left"></i></button>
+        </div>
+        
+        <div class="reader-scroller" id="reader-scroll" onscroll="syncParallax(this)">
+            <div class="parallax-hero" id="reader-hero">
+                <div class="hero-content">
+                    <span class="day-tag" id="reader-day-name" style="display:none;">ሰንበት</span>
+                    <h2 class="reader-title" id="reader-headline">Loading...</h2>
+                    <div class="reader-date" id="reader-date"></div>
+                    
+                    <div class="days-nav-wrapper">
+                        <div class="days-nav" id="days-tabs"></div>
+                    </div>
+                </div>
+            </div>
+
+            <article class="article-body">
+                <div id="reader-content-area"></div>
+            </article>
+        </div>
+    </section>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="nav.js"></script>
+    <script src="ea.js"></script>
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBERVjtc0sX_douQdDRL8amgLkbf9Rnvqs",
+            databaseURL: "https://ea-youth-union-d22b1-default-rtdb.firebaseio.com",
+            projectId: "ea-youth-union-d22b1",
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const STATE = {
+            category: 'adult', 
+            language: 'am', 
+            viewMode: 'current', 
+            activeQuarterId: null, 
+            activeLessonId: null, 
+            currentDayIdx: 0, 
+            fontSize: 18,
+            currentTextHash: '', 
+            dbData: {
+                adult: { currentQuarter: null, historyQuarters: {}, activeId: null },
+                youth: { currentQuarter: null, historyQuarters: {}, activeId: null },
+                children: { currentQuarter: null, historyQuarters: {}, activeId: null }
+            }
+        };
+
+        const DICT = {
+            am: { mainTitle: "የሰንበት ትምህርት", tabAdult: "ጎልማሶች", tabYouth: "ወጣቶች", tabChild: "ህፃናት", readBtn: "የአሁኑን ትምህርት ክፈት", history: "ያለፉ ሰንበት ትምህርቶች (History)", listTitle: "የትምህርት ዝርዝር", mem: "የመሪ ጥቅስ / መግቢያ", noData: "ምንም ዳታ አልተገኘም", days: ['ሰንበት', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ', 'አርብ'] },
+            or: { mainTitle: "Qayyabannaa Sanbataa", tabAdult: "Gurguddaa", tabYouth: "Dargaggoota", tabChild: "Daa'imman", readBtn: "Barnoota Ji'a Sadanii Bani", history: "Kan Darban (History)", listTitle: "Tarree Barnootaa", mem: "Caqasa Qayyabannaa / Seensa", noData: "Odeeffannoon hin jiru", days: ['Sanbata', 'Dilbata', 'Wiixata', 'Kibxata', 'Roobii', 'Kamisa', 'Jimaata'] },
+            en: { mainTitle: "Sabbath School", tabAdult: "Adults", tabYouth: "Youth", tabChild: "Children", readBtn: "Open Quarterly", history: "Past Archives", listTitle: "Lessons List", mem: "Memory Verse / Intro", noData: "No data found", days: ['Sabbath', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] }
+        };
+
+        function generateHash(str) {
+            let hash = 0;
+            if (!str || str.length === 0) return hash.toString();
+            for (let i = 0; i < str.length; i++) {
+                let char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; 
+            }
+            return hash.toString();
+        }
+
+        // የተጠናከረ የ Offline Caching System
+        const EACache = {
+            save: (key, data) => {
+                try { 
+                    localStorage.setItem(`ea_cache_${key}`, JSON.stringify(data)); 
+                } catch(e) {
+                    // Storage ከሞላ አሮጌ Highlight ዳታዎችን እያጠፋ አዲሱን Save ያደርጋል
+                    let keysToRemove = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        let k = localStorage.key(i);
+                        if (k && k.startsWith('ea_cache_ea_h_')) keysToRemove.push(k);
+                    }
+                    keysToRemove.forEach(k => localStorage.removeItem(k));
+                    try { localStorage.setItem(`ea_cache_${key}`, JSON.stringify(data)); } catch(ex) { console.warn("Cache Save Failed."); }
+                }
+            },
+            load: (key) => {
+                try { const data = localStorage.getItem(`ea_cache_${key}`); return data ? JSON.parse(data) : null; } 
+                catch(e) { return null; }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('copy', e => { e.preventDefault(); showToast("Copy disabled"); });
+            updateLanguageUI();
+            AppEngine.fetchDatabase();
+            Highlighter.init();
+            ReaderGestures.init();
+            
+            window.addEventListener('offline', () => showToast("Offline - በ Cache እየሰራ ነው"));
+            window.addEventListener('online', () => showToast("ከኢንተርኔት ጋር ተገናኝቷል - ዳታውን እያደሰ ነው..."));
+            checkSabbathModeLocally();
+        });
+        
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+        }
+
+        function checkSabbathModeLocally() {
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours();
+            if((day === 5 && hour >= 18) || (day === 6 && hour < 18)) document.body.classList.add('sabbath-mode');
+        }
+
+        function toggleAppTheme() {
+            const isDark = !document.body.classList.contains('dark-mode');
+            localStorage.setItem('ea_theme', isDark ? 'dark' : 'light');
+            document.documentElement.classList.toggle('dark-mode');
+            document.body.classList.toggle('dark-mode');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function toggleLangDropdown() { document.getElementById('lang-menu').classList.toggle('show'); }
+        document.addEventListener('click', (e) => { if(!e.target.closest('.lang-selector')) document.getElementById('lang-menu').classList.remove('show'); });
+
+        function changeLanguage(lang) {
+            STATE.language = lang;
+            document.querySelectorAll('.lang-opt').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('lang-menu').classList.remove('show');
+            updateLanguageUI();
+            
+            if(document.getElementById('stage-library').classList.contains('active')) AppEngine.renderDashboard();
+            if(document.getElementById('stage-list').classList.contains('active')) AppEngine.renderLessonList();
+            if(document.getElementById('stage-reader').classList.contains('active')) AppEngine.renderReader();
+        }
+
+        function updateLanguageUI() {
+            const d = DICT[STATE.language];
+            document.getElementById('ui-main-title').innerHTML = `<i class="fas fa-bible"></i> ${d.mainTitle}`;
+            document.getElementById('ui-tab-adult').innerText = d.tabAdult;
+            document.getElementById('ui-tab-youth').innerText = d.tabYouth;
+            document.getElementById('ui-tab-children').innerText = d.tabChild;
+            document.getElementById('ui-btn-read').innerHTML = `<i class="fas fa-book-reader"></i> ${d.readBtn}`;
+            document.getElementById('lbl-history').innerText = d.history;
+            document.getElementById('list-header-title').innerText = d.listTitle;
+            const langNames = { 'am': 'አማርኛ', 'or': 'Afaan Oromoo', 'en': 'English' };
+            document.getElementById('current-lang-txt').innerText = langNames[STATE.language];
+        }
+
+        function switchCategory(cat) {
+            STATE.category = cat;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            AppEngine.renderDashboard();
+        }
+
+        function parseAdminTags(text) {
+            if (!text) return "";
+            let parsed = text.replace(/\[M\]([\s\S]*?)\[\/M\]/gi, (match, content) => `<div class="admin-intro-note"><i class="fas fa-quote-left quote-icon"></i><div class="intro-content">${content.trim().replace(/\n/g, '<br>')}</div></div>`);
+            
+            parsed = parsed.replace(/\[B\]([\s\S]*?)\[\/B\]/gi, (match, verseContent) => {
+                let parts = verseContent.split('-');
+                let title = parts[0].trim();
+                let fullText = parts.slice(1).join('-').trim();
+                return `<a class="bible-link" onclick="showBiblePopup(decodeURIComponent('${encodeURIComponent(title)}'), decodeURIComponent('${encodeURIComponent(fullText)}'))">${title}</a>`;
+            });
+
+            parsed = parsed.replace(/\[P\]([\s\S]*?)\[\/P\][\s\S]*?\[P1\]([\s\S]*?)\[\/P1\]/gi, (match, pTitle, pContent) => `<a class="custom-p-link" onclick="showInfoModal(decodeURIComponent('${encodeURIComponent(pTitle.trim())}'), decodeURIComponent('${encodeURIComponent(pContent.trim())}'))">${pTitle.trim()}</a>`);
+
+            let qIndex = 0;
+            parsed = parsed.replace(/\[D\]([\s\S]*?)\[\/D\]/gi, (match, qText) => {
+                let uniqueId = `ans_${STATE.activeQuarterId}_${STATE.activeLessonId}_${STATE.currentDayIdx}_${qIndex++}`;
+                return `<div class="discussion-box"><div class="q-text"><i class="fas fa-question-circle" style="color:var(--primary);"></i> ${qText.trim().replace(/\n/g, '<br>')}</div><textarea class="discussion-textarea" id="${uniqueId}" placeholder="ይፃፉ......" oninput="saveDiscussionAnswer('${uniqueId}')"></textarea></div>`;
+            });
+            return parsed;
+        }
+
+        function saveDiscussionAnswer(id) { localStorage.setItem(id, document.getElementById(id).value); }
+        function loadDiscussionAnswers() { document.querySelectorAll('.discussion-textarea').forEach(ta => { let saved = localStorage.getItem(ta.id); if (saved) ta.value = saved; }); }
+
+        function showBiblePopup(title, content) {
+            let textToDisplay = content || `"${title}" - ይህንን የጽሑፍ ክፍል ከመጽሐፍ ቅዱስዎ ላይ ያንብቡ።`;
+            document.getElementById('bible-popup-title').innerHTML = `<i class="fas fa-book"></i> ${title}`;
+            document.getElementById('bible-popup-text').innerText = textToDisplay;
+            document.getElementById('bible-modal').classList.add('show');
+        }
+        function closeBiblePopup() { document.getElementById('bible-modal').classList.remove('show'); }
+
+        function showInfoModal(title, content) {
+            document.getElementById('info-popup-title').innerHTML = `<i class="fas fa-info-circle"></i> ${title}`;
+            document.getElementById('info-popup-text').innerHTML = content.replace(/\n/g, '<br>');
+            document.getElementById('info-modal').classList.add('show');
+        }
+        function closeInfoModal() { document.getElementById('info-modal').classList.remove('show'); }
+
+        const AppEngine = {
+            fetchDatabase: () => {
+                const categories = ['adult', 'youth', 'children'];
+
+                // መጀመሪያ ሲስተም ኮንፊግሬሽን ከ Cache ማውጣት
+                const cachedConfig = EACache.load('sys_config');
+                if(cachedConfig) applySystemConfig(cachedConfig);
+
+                db.ref('SystemConfig').on('value', snap => {
+                    const conf = snap.val() || {};
+                    EACache.save('sys_config', conf);
+                    applySystemConfig(conf);
+                });
+
+                function applySystemConfig(conf) {
+                    const now = new Date();
+                    const day = now.getDay();
+                    const hour = now.getHours();
+                    const isSabbathTime = (day === 5 && hour >= 18) || (day === 6 && hour < 18);
+                    
+                    if(((conf.autoSabbath === true || conf.autoSabbath === "true") && isSabbathTime) || (conf.forceSabbath === true || conf.forceSabbath === "true")) {
+                        document.body.classList.add('sabbath-mode');
+                        const cw = now.getFullYear() + '-' + getWeekNumber(now);
+                        if (localStorage.getItem('ea_sab_note') !== cw) { showToast("መልካም ሰንበት! 🕊️"); localStorage.setItem('ea_sab_note', cw); }
+                    } else {
+                        document.body.classList.remove('sabbath-mode');
+                    }
+                }
+
+                categories.forEach(cat => {
+                    // 1. መጀመሪያ Cache እናነባለን 
+                    const cachedHistory = EACache.load(`history_${cat}`);
+                    const cachedActiveId = EACache.load(`active_id_${cat}`);
+                    
+                    if(cachedHistory) {
+                        STATE.dbData[cat].historyQuarters = cachedHistory;
+                        if(cachedActiveId && cachedHistory[cachedActiveId]) {
+                            STATE.dbData[cat].currentQuarter = cachedHistory[cachedActiveId];
+                            STATE.dbData[cat].currentQuarter.id = cachedActiveId;
+                            STATE.dbData[cat].activeId = cachedActiveId;
+                        }
+                    }
+                    if (STATE.category === cat) AppEngine.renderDashboard();
+
+                    // 2. ከ Firebase ዳታ በ Realtime ስንቀበል Cacheን እናድሳለን
+                    db.ref(`${cat}_quarters`).on('value', snap => {
+                        const data = snap.val() || {};
+                        STATE.dbData[cat].historyQuarters = data;
+                        EACache.save(`history_${cat}`, data); 
+                        
+                        const activeId = STATE.dbData[cat].activeId;
+                        if(activeId && data[activeId]) {
+                            STATE.dbData[cat].currentQuarter = data[activeId];
+                            STATE.dbData[cat].currentQuarter.id = activeId;
+                        }
+                        
+                        if(STATE.category === cat) {
+                            if(document.getElementById('stage-library').classList.contains('active')) AppEngine.renderDashboard();
+                            if(document.getElementById('stage-list').classList.contains('active')) AppEngine.renderLessonList();
+                        }
+                    });
+                    
+                    db.ref(`active_${cat}_quarter`).on('value', activeSnap => {
+                        const activeId = activeSnap.val();
+                        if(activeId) {
+                            STATE.dbData[cat].activeId = activeId;
+                            EACache.save(`active_id_${cat}`, activeId); 
+                            
+                            const histData = STATE.dbData[cat].historyQuarters;
+                            if(histData && histData[activeId]) {
+                                STATE.dbData[cat].currentQuarter = histData[activeId];
+                                STATE.dbData[cat].currentQuarter.id = activeId;
+                                if(STATE.category === cat && document.getElementById('stage-library').classList.contains('active')) AppEngine.renderDashboard();
+                            }
+                        }
+                    });
+                });
+            },
+
+            renderDashboard: () => {
+                const catData = STATE.dbData[STATE.category];
+                const activeQ = catData.currentQuarter;
+                const d = DICT[STATE.language];
+                
+                if(activeQ) {
+                    document.getElementById('main-cover').style.backgroundImage = `url('${activeQ[`cover_${STATE.language}`] || activeQ.cover || 'logo.png'}')`;
+                    document.getElementById('main-book-title').innerText = activeQ[`title_${STATE.language}`] || activeQ.title || "Quarterly";
+                    document.getElementById('main-book-date').innerText = activeQ[`date_${STATE.language}`] || activeQ.dateRange || "";
+                    document.getElementById('spine-text').innerText = activeQ[`spine_${STATE.language}`] || activeQ.spineText || "SABBATH SCHOOL";
+                } else {
+                    document.getElementById('main-book-title').innerText = d.noData;
+                    document.getElementById('main-book-date').innerText = "";
+                }
+
+                const shelf = document.getElementById('history-bookshelf');
+                let shelfHtml = '';
+                const hData = catData.historyQuarters || {};
+                
+                Object.keys(hData).forEach(key => {
+                    if(activeQ && key === activeQ.id) return;
+                    const qCover = hData[key][`cover_${STATE.language}`] || hData[key].cover || 'logo.png';
+                    shelfHtml += `<div class="history-book" style="background-image:url('${qCover}');" onclick="AppEngine.openQuarterly('${key}')"></div>`;
+                });
+                shelf.innerHTML = shelfHtml === '' ? `<div style="color:var(--text-sub); font-size:13px; margin:auto;">${d.noData}</div>` : shelfHtml;
+            },
+
+            switchStage: (stageId) => {
+                document.querySelectorAll('.stage').forEach(el => el.classList.remove('active'));
+                document.getElementById(stageId).classList.add('active');
+            },
+            goHome: () => AppEngine.switchStage('stage-library'),
+
+            openQuarterly: (quarterId) => {
+                STATE.viewMode = quarterId === 'current' ? 'current' : 'history';
+                const catData = STATE.dbData[STATE.category];
+                
+                if(quarterId === 'current') {
+                    if(!catData.currentQuarter) return showToast(DICT[STATE.language].noData);
+                    STATE.activeQuarterId = catData.currentQuarter.id;
+                } else {
+                    STATE.activeQuarterId = quarterId;
+                }
+                AppEngine.renderLessonList();
+                AppEngine.switchStage('stage-list');
+            },
+
+            renderLessonList: () => {
+                const qData = STATE.dbData[STATE.category].historyQuarters[STATE.activeQuarterId];
+                if(!qData) return;
+                
+                const grid = document.getElementById('lesson-grid-render');
+                const introContainer = document.getElementById('quarterly-intro-container');
+                const introText = qData[`intro_${STATE.language}`] || qData[`desc_${STATE.language}`] || qData.intro || qData.desc;
+                
+                if(introText && introText.trim() !== "") {
+                    const qTitle = qData[`title_${STATE.language}`] || qData.title || "የሩብ ዓመቱ መግቢያ";
+                    if(introText.length > 150) {
+                        introContainer.innerHTML = `<div class="intro-card"><h3><i class="fas fa-book-reader"></i> ማብራሪያ </h3><p>${introText.substring(0, 150)}...</p><div class="read-more-btn" onclick="showInfoModal(decodeURIComponent('${encodeURIComponent(qTitle)}'), decodeURIComponent('${encodeURIComponent(introText)}'))">ተጨማሪ አንብብ <i class="fas fa-angle-double-right"></i></div></div>`;
+                    } else {
+                        introContainer.innerHTML = `<div class="intro-card"><h3><i class="fas fa-book-reader"></i> ማብራሪያ</h3><p>${introText}</p></div>`;
+                    }
+                } else { introContainer.innerHTML = ""; }
+
+                const lessons = qData.lessons || {}; 
+                const sortedKeys = Object.keys(lessons).sort((a,b) => (parseInt(a.replace(/\D/g, '')) || 0) - (parseInt(b.replace(/\D/g, '')) || 0));
+
+                grid.innerHTML = sortedKeys.map((key, index) => {
+                    const l = lessons[key];
+                    return `<div class="chapter-card" onclick="AppEngine.openReader('${key}')">
+                                <div class="chap-num">${index+1}</div>
+                                <div class="chap-info">
+                                    <div class="chap-title">${l[`title_${STATE.language}`] || l.title || `Lesson ${index+1}`}</div>
+                                    <div class="chap-date"><i class="far fa-calendar-alt"></i> ${l[`date_${STATE.language}`] || l.dateRange || '-'}</div>
+                                </div>
+                            </div>`;
+                }).join('');
+            },
+
+            openReader: (lessonKey) => {
+                STATE.activeLessonId = lessonKey;
+                const eatTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Addis_Ababa"}));
+                const realDay = eatTime.getDay();
+                STATE.currentDayIdx = realDay === 6 ? 0 : realDay + 1; 
+                AppEngine.renderReader();
+                AppEngine.switchStage('stage-reader');
+            },
+
+            closeReader: () => { Highlighter.saveState(); AppEngine.switchStage('stage-list'); },
+
+            renderReader: () => {
+                const qData = STATE.dbData[STATE.category].historyQuarters[STATE.activeQuarterId];
+                if(!qData || !qData.lessons || !qData.lessons[STATE.activeLessonId]) return;
+                
+                const lesson = qData.lessons[STATE.activeLessonId];
+                const d = DICT[STATE.language];
+
+                document.getElementById('reader-hero').style.backgroundImage = `url('${lesson[`cover_${STATE.language}`] || lesson.cover || qData[`cover_${STATE.language}`] || qData.cover || 'logo.png'}')`;
+
+                const dbDayKeys = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                const dayData = (lesson.days && lesson.days[dbDayKeys[STATE.currentDayIdx]]) ? lesson.days[dbDayKeys[STATE.currentDayIdx]] : {};
+
+                document.getElementById('reader-day-name').innerText = d.days[STATE.currentDayIdx];
+                document.getElementById('reader-headline').innerText = dayData[`title_${STATE.language}`] || dayData.title || lesson[`title_${STATE.language}`] || "Lesson Detail";
+
+                const dayDateText = dayData[`date_${STATE.language}`] || dayData.date;
+                const dateEl = document.getElementById('reader-date');
+                if(dayDateText && dayDateText.trim() !== "") {
+                    dateEl.innerHTML = `<i class="fas fa-calendar-alt"></i> ${dayDateText}`; dateEl.style.display = 'flex';
+                } else { dateEl.style.display = 'none'; }
+
+                document.getElementById('days-tabs').innerHTML = d.days.map((dayName, i) => `<div class="day-pill ${i === STATE.currentDayIdx ? 'active' : ''}" onclick="AppEngine.changeDay(${i})">${dayName}</div>`).join('');
+                document.querySelector('.day-pill.active')?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+
+                const contentArea = document.getElementById('reader-content-area');
+                
+                let rawBodyText = dayData[`body_${STATE.language}`] || dayData.body || d.noData;
+                STATE.currentTextHash = generateHash(rawBodyText);
+                
+                const cacheKey = `ea_h_${STATE.category}_${STATE.activeQuarterId}_${STATE.activeLessonId}_${STATE.currentDayIdx}_${STATE.language}`;
+                const cachedObj = EACache.load(cacheKey);
+
+                if(cachedObj && cachedObj.hash === STATE.currentTextHash) {
+                    contentArea.innerHTML = cachedObj.html;
+                } else {
+                    let paragraphs = rawBodyText.split('\n');
+                    let wrappedHtml = paragraphs.map(p => {
+                        let trimmed = p.trim();
+                        if (trimmed === '') return '';
+                        if (trimmed.match(/\[M\]|\[\/M\]|\[D\]|\[\/D\]|\[P\]|\[\/P\]|\[P1\]|\[\/P1\]|\[B\]|\[\/B\]/) || trimmed.startsWith('<')) return trimmed;
+                        if (trimmed.length < 80 && !trimmed.endsWith('.') && !trimmed.endsWith('?') && !trimmed.endsWith('።') && !trimmed.includes('<')) return `<h3>${trimmed}</h3>`;
+                        return `<p>${trimmed}</p>`;
+                    }).join('\n');
+
+                    contentArea.innerHTML = `<div class="text-content" style="font-size:${STATE.fontSize}px;">${parseAdminTags(wrappedHtml)}</div>`;
+                }
+                
+                loadDiscussionAnswers();
+                document.getElementById('reader-scroll').scrollTop = 0;
+            },
+
+            changeDay: (idx) => { Highlighter.saveState(); STATE.currentDayIdx = idx; AppEngine.renderReader(); }
+        };
+
+        function syncParallax(el) { 
+            const st = el.scrollTop; 
+            if(st < 380) { 
+                const hero = document.getElementById('reader-hero'); 
+                hero.style.backgroundPositionY = (st * 0.4) + "px"; 
+                hero.querySelector('.hero-content').style.opacity = 1 - (st / 280); 
+            } 
+        }
+
+        const ReaderGestures = {
+            init: () => {
+                const area = document.getElementById('reader-scroll');
+                let startX = 0, initialDist = 0, baseFont = 18;
+
+                area.addEventListener('touchstart', e => {
+                    if(e.touches.length === 1) startX = e.touches[0].clientX; 
+                    else if(e.touches.length === 2) { initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); baseFont = STATE.fontSize; }
+                }, {passive: false});
+
+                area.addEventListener('touchmove', e => {
+                    if(e.touches.length === 2) {
+                        e.preventDefault();
+                        STATE.fontSize = Math.min(Math.max(baseFont * (Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY) / initialDist), 15), 36);
+                        const txt = document.querySelector('.text-content'); if(txt) txt.style.fontSize = STATE.fontSize + "px";
+                    }
+                }, {passive: false});
+
+                area.addEventListener('touchend', e => {
+                    if(e.changedTouches.length === 1 && initialDist === 0) {
+                        let diff = startX - e.changedTouches[0].clientX;
+                        if(diff > 100 && STATE.currentDayIdx < 6) AppEngine.changeDay(STATE.currentDayIdx + 1); 
+                        else if(diff < -100 && STATE.currentDayIdx > 0) AppEngine.changeDay(STATE.currentDayIdx - 1); 
+                    }
+                    initialDist = 0; Highlighter.saveState(); 
+                });
+            }
+        };
+
+        // የተሻሻለ (Native Bible Mode) Highlighting System
+        const Highlighter = {
+            init: () => {
+                document.addEventListener('selectionchange', () => {
+                    const sel = window.getSelection();
+                    const bar = document.getElementById('highlighter-toolbar');
+                    if(!sel.isCollapsed && sel.toString().trim().length > 0 && document.getElementById('stage-reader').classList.contains('active')) {
+                        const rect = sel.getRangeAt(0).getBoundingClientRect();
+                        bar.style.display = 'flex'; bar.style.top = (rect.top - 10) + "px"; bar.style.left = Math.max(130, Math.min(window.innerWidth - 130, rect.left + rect.width/2)) + "px";
+                    } else { bar.style.display = 'none'; }
+                });
+            },
+            apply: (color) => {
+                const sel = window.getSelection(); 
+                if(sel.isCollapsed) return;
+                
+                // HTML መዋቅር ሳያበላሽ በቀጥታ ጽሁፎችን ለመቀባት የሚያስችል አዲስ ቴክኒክ
+                document.designMode = "on";
+                if(color === 'transparent') {
+                    document.execCommand('removeFormat', false, null);
+                } else {
+                    document.execCommand('backColor', false, color);
+                }
+                document.designMode = "off";
+
+                sel.removeAllRanges(); 
+                document.getElementById('highlighter-toolbar').style.display = 'none'; 
+                Highlighter.saveState();
+            },
+            saveState: () => {
+                const area = document.getElementById('reader-content-area');
+                if(!area || area.innerHTML.trim() === "") return;
+                const cacheKey = `ea_h_${STATE.category}_${STATE.activeQuarterId}_${STATE.activeLessonId}_${STATE.currentDayIdx}_${STATE.language}`;
+                try { EACache.save(cacheKey, { hash: STATE.currentTextHash, html: area.innerHTML }); } catch(e) {}
+            }
+        };
+
+        function showToast(msg) {
+            const t = document.getElementById('app-toast'); document.getElementById('toast-msg').innerText = msg;
+            t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
