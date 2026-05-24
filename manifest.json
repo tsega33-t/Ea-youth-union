@@ -21,7 +21,11 @@
   "theme_color": "#ffd700",
   "display": "standalone",
   "orientation": "portrait",
-  "categories": ["education", "music", "lifestyle"],
+  "categories": [
+    "education",
+    "music",
+    "lifestyle"
+  ],
   "screenshots": [
     {
       "src": "logo.png",
